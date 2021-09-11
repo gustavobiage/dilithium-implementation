@@ -1,13 +1,10 @@
 #ifndef __dilithium_
 #define __dilithium_
 
-struct configuration {
-	int k;   //
-	int l;   //
-	int q;   //
-	int n;   //
-	int eta; //
-};
-typedef struct configuration configuration_st;
+#define K_PAR 10
+#define L_PAR 20
+#define Q_PAR 30
+#define N_PAR 40
+#define ETA_PAR 50
 
 #endif

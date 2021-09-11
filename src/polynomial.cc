@@ -1,52 +1,38 @@
 #include <polynomial.h>
 
-polynomial::polynomial() {
-    coefficients = 0;
-    degree = 0;
-    _free = true;
+template <unsigned int Q>
+struct polynomial<Q> & polynomial<Q>::operator=(const struct polynomial & a) {
+    // TODO
 }
 
-polynomial::polynomial(int n) {
-    coefficients = new int32_t[n];
-    degree = n;
-    _free = true;
-}
-
-polynomial::~polynomial() {
-    if (coefficients && _free) {
-        delete coefficients;
+template <unsigned int Q>
+struct polynomial<Q> & polynomial<Q>::operator+(const struct polynomial& b) {
+    struct polynomial<Q> & a = *this;
+    struct polynomial<Q> c;
+    for (int i = 0; i < Q; i++) {
+        c[i] = a[i] + b[i];
     }
+    return c;
 }
 
-polynomial_st & polynomial::operator=(const polynomial_st& a) {
-    degree = a.degree;
-    coefficients = new int32_t[degree];
-    for (int i = 0; i < a.degree; i++) {
-        coefficients[i] = a.coefficients[i];
-    }
-    return *this;
-}
-
-polynomial_st& polynomial::operator+(const polynomial_st& a) {
-    for (int i = 0; i < degree; i++) {
-        coefficients[i] += a.coefficients[i];
-    }
-    return *this;
-}
-
-polynomial_st& polynomial::operator*(const polynomial_st& _p) {
-    int a, b, c;
-    for (int i = 0; i < degree; i++) {
-        for (int j = 0; j < degree; j++) {
-            c = (i+j) % degree;
-            a = j;
-            b = (i - j + degree) % degree;
-            coefficients[c] = _p.coefficients[a] coefficients[b];
+template <unsigned int Q>
+struct polynomial<Q> & polynomial<Q>::operator*(const struct polynomial<Q> & b) {
+    struct polynomial<Q> & a = *this;
+    struct polynomial<Q> c;
+    for (int i = 0; i < Q; i++) {
+        for (int j = 0; j < Q; j++) {
+            c[(i+j) % Q] = a[j] * b[(i - j + Q) % Q];
         }
     }
-    return *this;
+    return c;
 }
 
-polynomial_st& polynomial::operator/(const polynomial_st& a) {
+template <unsigned int Q>
+struct polynomial<Q> & polynomial<Q>::operator/(const struct polynomial& a) {
+    // TODO
+}
+
+template <unsigned int Q>
+struct polynomial<Q> generate_random_polynomial() {
     // TODO
 }

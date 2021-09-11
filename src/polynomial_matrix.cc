@@ -1,47 +1,35 @@
 #include <stdlib.h>
 #include <polynomial.h>
 
-polynomial_matrix::polynomial_matrix() {
-    matrix = 0;
-    lines = 0;
-}
-
-polynomial_matrix::polynomial_matrix(int m, int n) {
-    matrix = new pvector_st[m];
-    lines = m;
-    for (int i = 0; i < m; i++) {
-        matrix[i].init(n);
-    }
-}
-
-polynomial_matrix::~polynomial_matrix() {
-    if (matrix) {
-        delete matrix;
-    }
-}
-
-pvector_st& polynomial_matrix::operator[](int index) {
+template<unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_vector<N, Q> & polynomial_matrix<M, N, Q>::operator[](int index) {
     return matrix[index];
 }
 
-pmatrix_st& polynomial_matrix::operator+(const pmatrix_st& _matrix) {
-    for (int i = 0; i < lines; i++) {
-        for (int j = 0; j < matrix[i].columns; j++) {
-            matrix[i][j] += _matrix[i][j];
+template<unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_matrix<M, N, Q> & polynomial_matrix<M, N, Q>::operator+(const polynomial_matrix<M, N, Q> & b) {
+    struct polynomial_matrix<M, N, Q> c;
+    struct polynomial_matrix<M, N, Q> & a = *this;
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
+            c[i][j] = a[i][j] + b[i][j];
         }
     }
-    return *this;
+    return c;
 }
 
-pmatrix_st& polynomial_matrix::operator*(const pmatrix_st& _m) {
+template<unsigned int M1, unsigned int N1, unsigned int M2, unsigned int N2, unsigned int Q>
+struct polynomial_matrix<M1, N2, Q> & polynomial_matrix<M1, N1, Q>::operator*(const polynomial_matrix<M2, N2, Q> & b) {
+    struct polynomial_matrix<M1, N2, Q> c;
+    struct polynomial_matrix<M1, N1, Q> & a = *this;
     pmatrix * res = new pmatrix(lines(), _m.columns());
-    for (int i = 0; i < res.lines(); i++) {
-        for (int j = 0; j < res.columns(); j++) {
-            (*res)[i][j] = 0;
-            for (int k = 0; k < _m.lines(); k++) {
-                (*res)[i][j] += matrix[i][j] * _m[k][j]; 
+    for (int i = 0; i < M1; i++) {
+        for (int j = 0; j < N2; j++) {
+            c[i][j] = 0;
+            for (int k = 0; k < M2; k++) {
+                c[i][j] += a[i][j] * b[k][j]; 
             }
         }
     }
-    return res;
+    return c;
 }

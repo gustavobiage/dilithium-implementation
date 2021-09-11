@@ -5,16 +5,14 @@
 #include <stdint.h>
 #include <math_utils.h>
 
-struct polynomial;
-struct polynomial_vector;
-struct polynomial_matrix;
+template <unsigned int Q> struct polynomial;
+template <unsigned int N, unsigned int Q> struct polynomial_vector;
+template <unsigned int M, unsigned int N, unsigned int Q> struct polynomial_matrix;
 
 // TODO: make clear that is a polynomial in polynomial ring q
-// template<typename Q>
+template <unsigned int Q>
 struct polynomial {
 	int32_t coefficients[Q];
-
-	polynomial();
 
 	struct polynomial& operator=(const struct polynomial&);
 
@@ -23,52 +21,29 @@ struct polynomial {
 	struct polynomial& operator*(const struct polynomial&);
 
 	struct polynomial& operator/(const struct polynomial&);
-
-	~polynomial();
 };
 
-typedef struct polynomial polynomial_st;
-
+template<unsigned int N, unsigned int Q>
 struct polynomial_vector {
-    struct polynomial * vector;
-	int32_t columns;
-	bool _free;
+    struct polynomial<Q> vector[N];
 
-	polynomial_vector();
-
-	polynomial_vector(int32_t);
-
-	~polynomial_vector();
-
-	struct polynomial& operator[](int);
+	struct polynomial<Q>& operator[](int);
 	// Referencing returns matrix
-	struct polynomial_matrix& operator&();
-
-	void init(int32_t);
+	struct polynomial_matrix<N, 1, Q>& operator&();
 };
 
-typedef struct polynomial_vector pvector_st;
-
+template<unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_matrix {
-    struct polynomial_vector * matrix;
-	int32_t lines;
-	bool _free;
+    struct polynomial_vector<N, Q> matrix[M];
 
-	polynomial_matrix();
+	struct polynomial_vector<N, Q>& operator[](int);
 
-	polynomial_matrix(int32_t, int32_t);
+	struct polynomial_matrix<M, N, Q>& operator+(const struct polynomial_matrix&);
 
-	~polynomial_matrix();
-
-	struct polynomial_vector& operator[](int);
-
-	struct polynomial_matrix& operator+(const struct polynomial_matrix&);
-
-	struct polynomial_matrix& operator*(const struct polynomial_matrix&);
-	// Dereferencing returns vector
-	struct polynomial_vector& operator*();
+	template <unsigned int M2, unsigned int N2>
+	struct polynomial_matrix<M, N2, Q>& operator*(const struct polynomial_matrix<M2, N2, Q>&);
 };
 
-typedef struct polynomial_matrix pmatrix_st;
-
+template<unsigned int Q>
+struct polynomial<Q> generate_random_polynomial();
 #endif

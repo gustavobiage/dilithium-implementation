@@ -2,33 +2,31 @@
 #define __key_generation_
 
 #include <polynomial.h>
-#include <dilithium.h>
 
+template <unsigned int K, unsigned int L, unsigned int Q>
 struct secret_key {
-	pmatrix_st A;
-	pvector_st t;
+	struct polynomial_matrix<K, L, Q> A;
+	struct polynomial_vector<K, Q> t;
+	struct polynomial_vector<L, Q> s1;
+	struct polynomial_vector<K, Q> s2;
 };
 
-typedef struct secret_key secret_key_st;
-
+template <unsigned int K, unsigned int L, unsigned int Q>
 struct public_key {
-	pmatrix_st A;
-	pvector_st t;
-	pvector_st s1;
-	pvector_st s2;
+	struct polynomial_matrix<K, L, Q> A;
+	struct polynomial_vector<K, Q> t;
 };
 
-typedef struct public_key public_key_st;
-
+template <unsigned int K, unsigned int L, unsigned int Q>
 struct key_pair {
-	public_key_st * public_key;
-	secret_key_st * secret_key;
+	struct public_key<K, L, Q> public_key;
+	struct secret_key<K, L, Q> secret_key;
 };
 
-typedef struct key_pair key_pair_st;
+template <unsigned int K, unsigned int L, unsigned int Q>
+key_pair<K, L, Q> generate_key_pair();
 
-key_pair_st * generate_key_pair(const configuration_st &);
-
-polynomial_st generate_random_polynomial(const configuration_st &);
+template <unsigned int Q>
+struct polynomial<Q> generate_random_polynomial();
 
 #endif

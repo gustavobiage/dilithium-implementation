@@ -1,44 +1,44 @@
 #include <key_generation.h>
 
-key_pair_st * generate_key_pair(const configuration_st& conf) {
-
-	pmatrix_st A(conf.k, conf.l);
-	for (int i = 0; i < conf.k; i++) {
-		for (int j = 0; j < conf.k; j++) {
-			A[i][j] = generate_random_polynomial(conf);
+template <unsigned int K, unsigned int L, unsigned int Q>
+struct key_pair<K, L, Q> generate_key_pair() {
+	RETRY:
+	struct polynomial_matrix<K, L, Q> A;
+	for (int i = 0; i < K; i++) {
+		for (int j = 0; j < L; j++) {
+			A[i][j] = generate_random_polynomial<Q>();
 		}
 	}
 
-	pvector_st s1(conf.l);
-	for (int i = 0; i < conf.l; i++) {
-		s1[i] = generate_random_polynomial(conf);
+	struct polynomial_vector<L, Q> s1;
+	for (int i = 0; i < L; i++) {
+		s1[i] = generate_random_polynomial<Q>();
 	}
 
-	pvector_st s2(conf.k);
-	for (int i = 0; i < conf.k; i++) {
-		s2[i] = generate_random_polynomial(conf);
+	struct polynomial_vector<K, Q> s2;
+	for (int i = 0; i < K; i++) {
+		s2[i] = generate_random_polynomial<Q>();
 	}
 
-	pvector_st t = *((A * &s1) + &s2);
+	struct polynomial_vector<K, Q> t = *((A * &s1) + &s2);
 
-	// Assignment generates new copies
-	public_key_st * pk = (public_key_st*) malloc(sizeof(public_key_st));
-	pk->A = A;
-	pk->t = t;
-	pk->s1 = s1;
-	pk->s2 = s2;
+	if (t < R || t > 2*R) {
+		goto RETRY;
+	}
 
-	secret_key_st * sk = (secret_key_st*) malloc(sizeof(secret_key_st));
-	sk->A = A;
-	sk->t = t;
+	struct public_key<K, L, Q> pk;
+	pk.A = A;
+	pk.t = t;
 
-	key_pair_st * key_pair = (key_pair_st*) malloc(sizeof(key_pair_st));
-	key_pair->public_key = pk;
-	key_pair->secret_key = sk;
+	struct public_key<K, L, Q> sk;
+	sk.A = A;
+	sk.t = t;
+	sk.s1 = s1;
+	sk.s2 = s2;
+
+	struct key_pair<K, L, Q> key_pair;
+	key_pair.public_key = pk;
+	key_pair.secret_key = sk;
 
 	return key_pair;
-}
-
-polynomial_st generate_random_polynomial(const configuration_st & conf) {
-
 }
