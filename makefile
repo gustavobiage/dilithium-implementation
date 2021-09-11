@@ -1,12 +1,12 @@
 INCLUDE_DIR = include
-SRTC_DIR = src
-OBJS = $(shell find $(SRC) -iname "*.cc")
+SRC_DIR = src
+MAIN = $(SRC_DIR)/main.cc
 
 GCC = g++
 
 all:
 	make compile
 
-compile: $(OBJS)
-	$(GCC) $^ -I$(INCLUDE_DIR) -o dilithium
+compile: $(MAIN)
+	$(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -o dilithium
 

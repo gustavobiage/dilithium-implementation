@@ -6,14 +6,23 @@
 #include <math_utils.h>
 #include <uniform_distribution.h>
 
-// template <unsigned int N, unsigned int Q> struct polynomial;
+template <unsigned int N, unsigned int Q> struct polynomial;
 template <unsigned int M, unsigned int N, unsigned int Q> struct polynomial_vector;
-// template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q> struct polynomial_matrix;
+template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q> struct polynomial_matrix;
 
-// TODO: make clear that is a polynomial in polynomial ring q
+/*
+ * Polynomial in Ring Rq = Zq[X] / (X^n + 1)
+ * Multiplication of polynomial can be represented as convolution operation in Zq^n lattice.
+ */
 template <unsigned int N, unsigned int Q>
 struct polynomial {
 	int32_t coefficients[Q];
+
+	polynomial() {}
+
+	template <unsigned int Q2>
+	/* Constructor allows static cast between polynomial of different modulus */
+	polynomial(const struct polynomial<Q2, N> &);
 
 	struct polynomial<N, Q>& operator=(const struct polynomial<N, Q> &);
 
@@ -21,7 +30,22 @@ struct polynomial {
 
 	struct polynomial<N, Q>& operator*(const struct polynomial<N, Q> &);
 
-	static struct uniform_distribution uniform_distribution;
+	int32_t & operator[](int);
+
+	static struct uniform_distribution<Q> uniform_distribution;
+
+	static struct polynomial<N, Q> generate_random_polynomial();
+};
+
+template <unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_vector {
+    struct polynomial<N, Q> vector[M];
+
+	struct polynomial<N, Q> & operator[](int);
+
+	struct polynomial<N, Q> & operator[](int) const;
+	// Referencing returns matrix
+	struct polynomial_matrix<M, 1, N, Q>& operator&();
 };
 
 template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
@@ -32,19 +56,14 @@ struct polynomial_matrix {
 
 	struct polynomial_matrix<P, M, N, Q> & operator+(const struct polynomial_matrix&);
 
-	template <unsigned int P2, unsigned int M2, unsigned int N2, unsigned int Q2, unsigned int P3, unsigned int M3, unsigned int N3, unsigned int Q3>
-	struct polynomial_matrix<M3, P3, N3, Q3>& operator*(const struct polynomial_matrix<P2, M2, N2, Q2>&);
+	template <unsigned int P2, unsigned int M2>
+	struct polynomial_matrix<P, M2, N, Q> operator*(const polynomial_matrix<P2, M2, N, Q> & b);
+
+	struct polynomial_vector<P, N, Q> operator*();
 };
 
-template <unsigned int M, unsigned int N, unsigned int Q>
-struct polynomial_vector {
-    struct polynomial<N, Q> vector[M];
+#include <polynomial.cc>
+#include <polynomial_vector.cc>
+#include <polynomial_matrix.cc>
 
-	struct polynomial<N, Q> & operator[](int);
-	// Referencing returns matrix
-	struct polynomial_matrix<M, 1, N, Q>& operator&();
-};
-
-template<unsigned int N, unsigned int Q>
-struct polynomial<N, Q> generate_random_polynomial();
 #endif

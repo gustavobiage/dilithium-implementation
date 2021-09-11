@@ -24,6 +24,8 @@ struct key_pair {
 };
 
 template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
-key_pair<K, L, N, Q> generate_key_pair();
+struct key_pair<K, L, N, Q> generate_key_pair();
+
+#include <key_generation.cc>
 
 #endif
