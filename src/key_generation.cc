@@ -1,7 +1,10 @@
-#include <key_generation.h>
+/* Included on header file */
+#include <stdio.h>
 
 template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
 struct key_pair<K, L, N, Q> generate_key_pair() {
+	printf("Generating A matrix: \n");
+
 	struct polynomial_matrix<K, L, N, Q> A;
 	for (int i = 0; i < K; i++) {
 		for (int j = 0; j < L; j++) {
@@ -9,17 +12,28 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 		}
 	}
 
+	printf("\t\tOK!\n");
+	printf("Generating s1 vector: \n");
+
 	struct polynomial_vector<L, N, Q> s1;
 	for (int i = 0; i < L; i++) {
 		s1[i] = polynomial<N, Q>::generate_random_polynomial();
 	}
+
+	printf("\t\tOK!\n");
+	printf("Generating s2 vector: \n");
 
 	struct polynomial_vector<K, N, Q> s2;
 	for (int i = 0; i < K; i++) {
 		s2[i] = polynomial<N, Q>::generate_random_polynomial();
 	}
 
+	printf("\t\tOK!\n");
+	printf("Generating t vector: \n");
+
 	struct polynomial_vector<K, N, Q> t = *((A * &s1) + &s2);
+
+	printf("\t\tOK!\n");
 
 	struct public_key<K, L, N, Q> pk;
 	pk.A = A;

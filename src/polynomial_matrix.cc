@@ -8,7 +8,12 @@ struct polynomial_vector<M, N, Q> & polynomial_matrix<P, M, N, Q>::operator[](in
 }
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
-struct polynomial_matrix<P, M, N, Q> & polynomial_matrix<P, M, N, Q>::operator+(const polynomial_matrix<P, M, N, Q> & b) {
+struct polynomial_vector<M, N, Q> polynomial_matrix<P, M, N, Q>::operator[](int index) const {
+	return matrix[index];
+}
+
+template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator+(const polynomial_matrix<P, M, N, Q> & b) {
     struct polynomial_matrix<P, M, N, Q> c;
     struct polynomial_matrix<P, M, N, Q> & a = *this;
     for (int i = 0; i < P; i++) {

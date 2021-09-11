@@ -16,4 +16,5 @@ struct uniform_distribution {
     const std::uniform_int_distribution<> distrib;
 };
 
+#include <uniform_distribution.cc>
 #endif

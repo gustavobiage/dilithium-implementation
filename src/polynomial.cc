@@ -10,7 +10,16 @@ polynomial<N, Q>::polynomial(const struct polynomial<Q2, N> & b) {
 }
 
 template <unsigned int N, unsigned int Q>
-struct polynomial<N, Q> & polynomial<N, Q>::operator+(const struct polynomial<N, Q> & b) {
+struct polynomial<N, Q> polynomial<N, Q>::operator=(int32_t c) {
+    struct polynomial<N, Q> p;
+    for (int i = 0; i < N; i++) {
+        p[i] = (c + Q) % Q;
+    }
+    return p;
+}
+
+template <unsigned int N, unsigned int Q>
+struct polynomial<N, Q> polynomial<N, Q>::operator+(const struct polynomial<N, Q> & b) {
     const struct polynomial<N, Q> & a = *this;
     struct polynomial<N, Q> c;
     for (int i = 0; i < N; i++) {
@@ -20,7 +29,7 @@ struct polynomial<N, Q> & polynomial<N, Q>::operator+(const struct polynomial<N,
 }
 
 template <unsigned int N, unsigned int Q>
-struct polynomial<N, Q> & polynomial<N, Q>::operator*(const struct polynomial<N, Q> & b) {
+struct polynomial<N, Q> polynomial<N, Q>::operator*(const struct polynomial<N, Q> & b) {
     struct polynomial<N, Q> & a = *this;
     struct polynomial<N, Q> c;
     for (int i = 0; i < N; i++) {
@@ -32,9 +41,23 @@ struct polynomial<N, Q> & polynomial<N, Q>::operator*(const struct polynomial<N,
 }
 
 template <unsigned int N, unsigned int Q>
+struct polynomial<N, Q> polynomial<N, Q>::operator+=(const struct polynomial<N, Q> & b) {
+    struct polynomial<N, Q> & a = *this;
+    return a + b;
+}
+
+template <unsigned int N, unsigned int Q>
 int32_t & polynomial<N, Q>::operator[](int index) {
     return coefficients[index];
 }
+
+template <unsigned int N, unsigned int Q>
+int32_t polynomial<N, Q>::operator[](int index) const {
+    return coefficients[index];
+}
+
+template <unsigned int N, unsigned int Q>
+struct uniform_distribution<Q> polynomial<N, Q>::uniform_distribution;
 
 template <unsigned int N, unsigned int Q>
 struct polynomial<N, Q> polynomial<N, Q>::generate_random_polynomial() {

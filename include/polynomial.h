@@ -24,13 +24,17 @@ struct polynomial {
 	/* Constructor allows static cast between polynomial of different modulus */
 	polynomial(const struct polynomial<Q2, N> &);
 
-	struct polynomial<N, Q>& operator=(const struct polynomial<N, Q> &);
+	struct polynomial<N, Q> operator=(const int32_t);
 
-	struct polynomial<N, Q>& operator+(const struct polynomial<N, Q> &);
+	struct polynomial<N, Q> operator+(const struct polynomial<N, Q> &);
 
-	struct polynomial<N, Q>& operator*(const struct polynomial<N, Q> &);
+	struct polynomial<N, Q> operator*(const struct polynomial<N, Q> &);
+
+	struct polynomial<N, Q> operator+=(const struct polynomial<N, Q> &);
 
 	int32_t & operator[](int);
+
+	int32_t operator[](int) const;
 
 	static struct uniform_distribution<Q> uniform_distribution;
 
@@ -43,9 +47,9 @@ struct polynomial_vector {
 
 	struct polynomial<N, Q> & operator[](int);
 
-	struct polynomial<N, Q> & operator[](int) const;
+	struct polynomial<N, Q> operator[](int) const;
 	// Referencing returns matrix
-	struct polynomial_matrix<M, 1, N, Q>& operator&();
+	struct polynomial_matrix<M, 1, N, Q> operator&();
 };
 
 template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
@@ -54,7 +58,9 @@ struct polynomial_matrix {
 
 	struct polynomial_vector<M, N, Q> & operator[](int);
 
-	struct polynomial_matrix<P, M, N, Q> & operator+(const struct polynomial_matrix&);
+	struct polynomial_vector<M, N, Q> operator[](int) const;
+
+	struct polynomial_matrix<P, M, N, Q> operator+(const struct polynomial_matrix&);
 
 	template <unsigned int P2, unsigned int M2>
 	struct polynomial_matrix<P, M2, N, Q> operator*(const polynomial_matrix<P2, M2, N, Q> & b);
