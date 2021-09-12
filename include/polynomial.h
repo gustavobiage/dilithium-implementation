@@ -16,13 +16,13 @@ template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q> struct
  */
 template <unsigned int N, unsigned int Q>
 struct polynomial {
-	int32_t coefficients[Q];
+	int32_t coefficients[N];
 
 	polynomial() {}
 
 	template <unsigned int Q2>
 	/* Constructor allows static cast between polynomial of different modulus */
-	polynomial(const struct polynomial<Q2, N> &);
+	polynomial(const struct polynomial<N, Q2> &);
 
 	struct polynomial<N, Q> operator=(const int32_t);
 

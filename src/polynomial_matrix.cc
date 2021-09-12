@@ -1,6 +1,5 @@
-#include <stdlib.h>
+/* Included on header file */
 #include <assert.h>
-#include <polynomial.h>
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_vector<M, N, Q> & polynomial_matrix<P, M, N, Q>::operator[](int index) {

@@ -1,8 +1,8 @@
-#include <polynomial.h>
+/* Included on header file */
 
 template <unsigned int N, unsigned int Q>
 template <unsigned int Q2>
-polynomial<N, Q>::polynomial(const struct polynomial<Q2, N> & b) {
+polynomial<N, Q>::polynomial(const struct polynomial<N, Q2> & b) {
     polynomial<N, Q> & a = *this;
     for (int i = 0; i < N; i++) {
         a[i] = b[i] % Q;

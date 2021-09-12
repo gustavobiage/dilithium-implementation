@@ -23,7 +23,7 @@ struct key_pair {
 	struct secret_key<K, L, N, Q> secret_key;
 };
 
-template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
+template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int ETA>
 struct key_pair<K, L, N, Q> generate_key_pair();
 
 #include <key_generation.cc>
