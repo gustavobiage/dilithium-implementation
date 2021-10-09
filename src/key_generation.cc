@@ -39,7 +39,7 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 	display_status_result("OK!"); new_line();
 	display_status_header("Generating t vector");
 
-	struct polynomial_vector<K, N, Q> t = *((A * &s1) + &s2);
+	struct polynomial_vector<K, N, Q> t = (A * s1) + s2;;
 
 	display_status_result("OK!");
 

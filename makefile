@@ -10,5 +10,5 @@ all:
 
 compile: $(MAIN)
 	#$(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -L$(CRYPTOPP_LIB_DIR) $(CRYPTOPP_LIB_FLAGS) -o dilithium
-	$(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -L/usr/lib/cryptopp -lcryptopp -o dilithium
+	$(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -lcryptopp -o dilithium
 

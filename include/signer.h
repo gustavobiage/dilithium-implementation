@@ -9,8 +9,10 @@
 
 typedef unsigned char byte;
 
-struct signed_content {
-    const byte signed_content = 3;
+template <unsigned int L, unsigned int N, unsigned int Q>
+struct signature {
+    polynomial_vector<L, N, Q> z;
+    polynomial<N, Q> c;
 };
 
 template <unsigned int Q>
@@ -25,8 +27,8 @@ void bit_packing(byte *, int, polynomial_vector<K, N, Q>);
 template <unsigned int N, unsigned int Q>
 polynomial<N, Q> sample_in_ball(byte *, int);
 
-template <unsigned int GAMMA1, unsigned int GAMMA2, unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
-struct signed_content sign(struct secret_key<K, L, N, Q>, byte *, int);
+template <unsigned int BETA, unsigned int GAMMA1, unsigned int GAMMA2, unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
+struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> &, byte *, int);
 
 #include <signer.cc>
 

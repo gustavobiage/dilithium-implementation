@@ -51,6 +51,8 @@ polynomial<N, Q> sample_in_ball(byte * s, int h) {
     std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
     std::uniform_int_distribution<int> distrib;
 
+    int mask[] = {128, 64, 32, 16, 8, 4, 2, 1};
+
     /* Fisher–Yates shuffle */
     int choosen, j;
     for (int i = 0; i < h; i++) {
@@ -60,7 +62,7 @@ polynomial<N, Q> sample_in_ball(byte * s, int h) {
         choosen = unused_numbers[j];
         unused_numbers[j] = unused_numbers[i];
         unused_numbers[i] = choosen;
-        if (s[i]) {
+        if (s[i/8] & mask[i % 8]) {
             c[choosen] = -1;
         } else {
             c[choosen] = 1;
@@ -69,24 +71,44 @@ polynomial<N, Q> sample_in_ball(byte * s, int h) {
     return c;
 }
 
-template <unsigned int GAMMA1, unsigned int GAMMA2, unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
-struct signed_content sign(struct secret_key<K, L, N, Q> sk, byte message[], int message_size) {
+template <unsigned int BETA, unsigned int GAMMA1, unsigned int GAMMA2, unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
+struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[], int message_size) {
+
+    display_box("Generating signature with prameters:",
+            "BETA", BETA,
+            "GAMMA1", GAMMA1,
+            "GAMMA2", GAMMA2,
+            "K", K,
+            "L", L,
+            "Q", Q);
+
     REJECT:
+
+    display_status_header("Generating y vector");
 
     polynomial_vector<L, N, Q> y;
     for (int i = 0; i < L; i++) {
         y[i] = static_cast<struct polynomial<N, Q>>(polynomial<N, GAMMA1>::generate_random_polynomial());
     }
 
+    display_status_result("OK!"); new_line();
+	display_status_header("Generating Ay vector");
+
     polynomial_vector<K, N, Q> Ay = *(sk.A * &y);
-    
+
+    display_status_result("OK!"); new_line();
+    display_status_header("Generating w1 vector");
+
     polynomial_vector<K, N, Q> w1;
     for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
             w1[i][j] = high_order_bits<Q>(Ay[i][j], GAMMA2); 
         }
     }
-    
+
+    display_status_result("OK!"); new_line();
+    display_status_header("Generating c polynomial from hash");
+
     assert((K * N * 4) % 8 == 0);
 
     // message to be signed concatenated with w1 (high order polynomial vector).
@@ -96,20 +118,49 @@ struct signed_content sign(struct secret_key<K, L, N, Q> sk, byte message[], int
 
     assert(message_size == 48); // Simple implementation require a 48 byte message
     memcpy(concat, message, message_size);
-    
+
     bit_packing(concat, message_size, w1);
 
+    CryptoPP::SHAKE256 shake(8);
+    shake.Update((const byte *) &concat[0], concat_size);
 
-    SHAKE256 shake(64);
-    shake.update((const byte *) &concat[0], concat_size);
-
-    byte digest[64];
-    shake.final(&digest[0]);
+    byte digest[8];
+    shake.Final(digest);
 
     polynomial<N, Q> c = sample_in_ball<N, Q>(digest, 60);
 
-    // polynomial_vector<> z = *(&y + &&c * &sk.s1);
+    display_status_result("OK!"); new_line();
+    display_status_header("Generating z vector");
 
-    struct signed_content s;
-    return s;
+    polynomial_vector<L, N, Q> z = y + (c * sk.s1);
+
+    display_status_result("OK!"); new_line();
+    display_status_header("testing for rejection");
+
+    // for (int i = 0; i < L; i++) {
+    //     for (int j = 0; j < N; j++) {
+    //         if (z[i][j] > GAMMA1 - BETA) {
+    //             display_status_result("ERROR!"); new_line();
+    //             goto REJECT;
+    //         }
+    //     }
+    // }
+
+    polynomial_vector<K, N, Q> z2 = (sk.A * z) - (c * sk.t);
+
+    // for (int i = 0; i < K; i++) {
+    //     for (int j = 0; j < N; j++) {
+    //         if (z2[i][j] > GAMMA2 - BETA) {
+    //             display_status_result("ERROR!"); new_line();
+    //             goto REJECT;
+    //         }
+    //     }
+    // }
+
+    display_status_result("OK!"); new_line();
+
+    struct signature<L, N, Q> signature;
+    signature.z = z;
+    signature.c = c;
+    return signature;
 }

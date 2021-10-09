@@ -7,13 +7,16 @@ template <unsigned int Q> struct uniform_distribution;
 
 template <unsigned int Q>
 struct uniform_distribution {
-    uniform_distribution(): distrib(0, Q) {}
+public:
+
+    uniform_distribution() : generator(rd()), distrib(0, Q-1) {}
 
     int generate();
 
-    const static std::random_device rd;
-    const static std::mt19937 generator; //Standard mersenne_twister_engine seeded with rd()
-    const std::uniform_int_distribution<> distrib;
+public:
+    std::random_device rd;
+    std::mt19937 generator;
+    std::uniform_int_distribution<int> distrib;
 };
 
 #include <uniform_distribution.cc>

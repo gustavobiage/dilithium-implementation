@@ -29,13 +29,34 @@ struct polynomial<N, Q> polynomial<N, Q>::operator+(const struct polynomial<N, Q
 }
 
 template <unsigned int N, unsigned int Q>
+struct polynomial<N, Q> polynomial<N, Q>::operator-(const struct polynomial<N, Q> & b) {
+    const struct polynomial<N, Q> & a = *this;
+    struct polynomial<N, Q> c;
+    for (int i = 0; i < N; i++) {
+        c[i] = (a[i] - b[i] + Q) % Q;
+    }
+    return c;
+}
+
+template <unsigned int N, unsigned int Q>
 struct polynomial<N, Q> polynomial<N, Q>::operator*(const struct polynomial<N, Q> & b) {
     struct polynomial<N, Q> & a = *this;
     struct polynomial<N, Q> c;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            c[(i+j) % N] = (a[j] * b[(i - j + N) % N]) % Q;
+            c[i] = (a[j] * b[(i - j + N) % N]) % Q;
         }
+    }
+    return c;
+}
+
+template <unsigned int N, unsigned int Q>
+template <unsigned int M>
+struct polynomial_vector<M, N, Q> polynomial<N, Q>::operator*(const struct polynomial_vector<M, N, Q> & b) {
+    struct polynomial<N, Q> a = *this;
+    struct polynomial_vector<M, N, Q> c;
+    for (int i = 0; i < M; i++) {
+        c[i] = b[i] * a;
     }
     return c;
 }
@@ -44,6 +65,13 @@ template <unsigned int N, unsigned int Q>
 struct polynomial<N, Q> polynomial<N, Q>::operator+=(const struct polynomial<N, Q> & b) {
     struct polynomial<N, Q> & a = *this;
     return a + b;
+}
+
+template <unsigned int N, unsigned int Q>
+struct polynomial_vector<1, N, Q> polynomial<N, Q>::operator&() {
+    struct polynomial_vector<1, N, Q> b;
+    b[0] = *this;
+    return b;
 }
 
 template <unsigned int N, unsigned int Q>
