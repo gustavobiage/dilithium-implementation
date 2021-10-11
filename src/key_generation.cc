@@ -41,7 +41,7 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 
 	struct polynomial_vector<K, N, Q> t = (A * s1) + s2;;
 
-	display_status_result("OK!");
+	display_status_result("OK!"); new_line();
 
 	struct public_key<K, L, N, Q> pk;
 	pk.A = A;

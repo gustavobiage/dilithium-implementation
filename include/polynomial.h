@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <math_utils.h>
 #include <uniform_distribution.h>
+#include <stdexcept>
 
 template <unsigned int N, unsigned int Q> struct polynomial;
 template <unsigned int M, unsigned int N, unsigned int Q> struct polynomial_vector;
@@ -19,6 +20,10 @@ struct polynomial {
 	int32_t coefficients[N];
 
 	polynomial() {}
+
+	// polynomial(int [N]);
+
+	polynomial(const int [N]);
 
 	template <unsigned int Q2>
 	/* Constructor allows static cast between polynomial of different modulus */
