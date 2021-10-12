@@ -5,6 +5,16 @@
 const unsigned int Q = 10;
 const unsigned int N = 5;
 
+int test_random_polynome_generation() {
+    struct polynomial<N, Q> p = polynomial<N, Q>::generate_random_polynomial();
+    for (int i = 0; i < N; i++) {
+        if (p[i] < 0 || p[i] >= Q) {
+            return -1;
+        }
+    }
+    return 1;
+}
+
 int test_polynome_asignment() {
     const int c1[N] = {4, 9, 1, 5, 0};
     struct polynomial<N, Q> p1(c1);
@@ -62,11 +72,17 @@ int test_polynome_multiplication() {
     return 0;
 }
 
+int test_polynome_multiplication_with_vector() {
+    return -1;
+}
+
 int main() {
     display_box("Testing polynomial operations");
+    assert_value("Test random polynome generation", test_random_polynome_generation());
     assert_value("Test polynome asignment", test_polynome_asignment());
     assert_value("Test polynome sum", test_polynome_sum());
     assert_value("Test polynome subtraction", test_polynome_subtraction());
     assert_value("Test polynome multiplication", test_polynome_multiplication());
+    assert_value("Test polynome multiplication with vector", test_polynome_multiplication_with_vector());
     return 0;
 }

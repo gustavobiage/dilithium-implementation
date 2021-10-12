@@ -3,15 +3,14 @@
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
 polynomial_matrix<P, M, N, Q>::polynomial_matrix(const struct polynomial_vector<P, N, Q> & b) {
-// M different than 1 will result in compilation error
-#if M == 1
-	struct polynomial_matrix<P, 1, N, Q> & a = *this;
-	for (int i = 0; i < P; i++) {
-		a[i][1] = b[i];
+	if (M == 1) {
+		struct polynomial_matrix<P, 1, N, Q> & a = *this;
+		for (int i = 0; i < P; i++) {
+			a[i][1] = b[i];
+		}
+	} else {
+		throw std::domain_error("Vector to Matrix conversion requirer column matrix (constructor)");
 	}
-#else
-	throw std::domain_error("Vector to Matrix conversion requirer column matrix");
-#endif
 }
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
@@ -38,12 +37,14 @@ struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator+(co
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator+(const struct polynomial_vector<P, N, Q>& b_) {
-#if M != 1
-	const struct polynomial_matrix<P, 1, N, Q> b = &b_;
-	struct polynomial_matrix<P, M, N, Q> & a = *this;
-	struct polynomial_matrix<P, 1, N, Q> c = a + b;
-	return c;
-#endif
+	if (M == 1) {
+		const struct polynomial_matrix<P, 1, N, Q> b = &b_;
+		struct polynomial_matrix<P, M, N, Q> & a = *this;
+		struct polynomial_matrix<P, 1, N, Q> c = a + b;
+		return c;
+	} else {
+		throw std::domain_error("Vector to Matrix conversion requirer column matrix (polynomial_matrix<P, M, N, Q>::operator+)");
+	}
 }
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
@@ -60,14 +61,14 @@ struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator-(co
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator-(const struct polynomial_vector<P, N, Q>& b_) {
-#if M == 1
-	const struct polynomial_matrix<P, 1, N, Q> b = &b_;
-	struct polynomial_matrix<P, M, N, Q> & a = *this;
-	struct polynomial_matrix<P, 1, N, Q> c = a - b;
-	return c;
-#else
-	throw std::domain_error("Vector to Matrix conversion results in a column matrix");
-#endif
+	if (M == 1) {
+		const struct polynomial_matrix<P, 1, N, Q> b = &b_;
+		struct polynomial_matrix<P, M, N, Q> & a = *this;
+		struct polynomial_matrix<P, 1, N, Q> c = a - b;
+		return c;
+	} else {
+		throw std::domain_error("Vector to Matrix conversion results in a column matrix (polynomial_matrix<P, M, N, Q>::operator-)");
+	}
 }
 
 template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
@@ -96,14 +97,14 @@ struct polynomial_matrix<P, 1, N, Q> polynomial_matrix<P, M, N, Q>::operator*(co
 
 template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_vector<P, N, Q> polynomial_matrix<P, M, N, Q>::operator*() {
-#if M == 1
-	polynomial_vector<P, N, Q> b;
-	polynomial_matrix<P, M, N, Q> & a = *this;
-	for (int i = 0; i < P; i++) {
-		b[i] = a[0][i];
+	if (M == 1) {
+		polynomial_vector<P, N, Q> b;
+		polynomial_matrix<P, M, N, Q> & a = *this;
+		for (int i = 0; i < P; i++) {
+			b[i] = a[0][i];
+		}
+		return b;
+	} else {
+		throw std::domain_error("Matrix to Vector conversion requirer column matrix (polynomial_matrix<P, M, N, Q>::operator*)");
 	}
-	return b;
-#else
-	throw std::domain_error("Matrix to Vector conversion requirer column matrix");
-#endif
 }

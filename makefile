@@ -18,14 +18,14 @@ all:
 	make compile_tests
 
 compile: $(MAIN)
-	# $(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -L$(CRYPTOPP_LIB_DIR) $(CRYPTOPP_LIB_FLAGS) -o dilithium
 	$(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -lcryptopp -fpermissive -o $(OUTPUT_DIR)/dilithium
 
 compile_tests: $(TEST_FILES)
-	$(GCC) $^ -I$(INCLUDE_DIR) -I$(SRC_DIR) -I$(TESTS_DIR) -lcryptopp -fpermissive -o $(OUTPUT_DIR)/$(shell basename $^ $(SUFIX))
+	$(foreach test, $(TEST_FILES), \
+	$(GCC) $(test) -I$(INCLUDE_DIR) -I$(SRC_DIR) -I$(TESTS_DIR) -lcryptopp -fpermissive -o $(OUTPUT_DIR)/$(shell basename $(test) $(SUFIX));)
 
 run_tests: compile_tests
-	./$(OUTPUT_DIR)/test_*
+	$(foreach test, $(TEST_FILES), ./$(OUTPUT_DIR)/$(shell basename $(test) $(SUFIX));)
 
 clean:
 	rm -f -d -r $(OUTPUT_DIR)
