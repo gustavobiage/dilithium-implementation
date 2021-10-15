@@ -19,7 +19,7 @@ polynomial<N, Q>::polynomial(const struct polynomial<N, Q2> & b) {
 
 template <unsigned int N, unsigned int Q>
 struct polynomial<N, Q> polynomial<N, Q>::operator=(int32_t c) {
-    struct polynomial<N, Q> p;
+    struct polynomial<N, Q> & p = *this;
     for (int i = 0; i < N; i++) {
         p[i] = (c + Q) % Q;
     }

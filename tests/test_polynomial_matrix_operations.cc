@@ -145,11 +145,54 @@ int test_matrix_subtraction_with_matrix() {
 }
 
 int test_matrix_multiplication_with_vector() {
-    return -1;
+    int a1[P][M] = {{5, 2, 4, 7, 1},
+                    {1, 4, 3, 2, 9},
+                    {9, 9, 1, 2, 3},
+                    {3, 5, 2, 8, 7},
+                    {1, 2, 2, 6, 5}};
+    struct polynomial_matrix<P, M, N, Q> m1 = create_matrix<P, M, N, Q>(a1);
+    int a2[M] = {1, 4, 4, 2, 7};
+    struct polynomial_vector<M, N, Q> v1 = create_vector<M, N, Q>(a2);
+    int a3[P] = {0, 6, 4, 6, 4};
+    struct polynomial_matrix<P, 1, N, Q> m2 = m1 * v1;
+    for (int i = 0; i < P; i++) {
+        if (m2[i][0][0] != a3[i]) {
+            return -1;
+        }
+    }
+    return 0;
 }
 
 int test_matrix_multiplication_with_matrix() {
-    return -1;
+    int a1[P][M] = {{3, 2, 1, 5, 6},
+                    {3, 3, 4, 9, 7},
+                    {0, 1, 5, 4, 4},
+                    {3, 3, 7, 6, 3},
+                    {4, 9, 2, 1, 2}};
+    struct polynomial_matrix<P, M, N, Q> m1 = create_matrix<P, M, N, Q>(a1);
+    int a2[P][M] = {{3, 5, 4, 8, 1},
+                    {1, 4, 3, 3, 1},
+                    {4, 7, 8, 6, 9},
+                    {9, 5, 4, 5, 8},
+                    {7, 6, 8, 5, 4}};
+    struct polynomial_matrix<P, M, N, Q> m2 = create_matrix<P, M, N, Q>(a2);
+    if (M != P) {
+        return -1;
+    }
+    int a3[P][M] = {{2, 1, 4, 1, 8},
+                    {8, 2, 5, 7, 2},
+                    {5, 3, 1, 3, 4},
+                    {5, 4, 5, 0, 9},
+                    {2, 7, 9, 6, 7}};
+    struct polynomial_matrix<P, M, N, Q> m3 = m1 * m2;
+    for (int i = 0; i < P; i++) {
+        for (int j = 0; j < M; j++) {
+            if (m3[i][j][0] != a3[i][j]) {
+                return -1;
+            }
+        }
+    }
+    return 0;
 }
 
 int test_matrix_conversion_to_vector() {
@@ -171,7 +214,8 @@ int main() {
     assert_value("Test matrix sum with matrix", test_matrix_sum_with_matrix());
     assert_value("Test matrix subtraction with vector", test_matrix_subtraction_with_vector());
     assert_value("Test matrix subtraction with matrix", test_matrix_subtraction_with_matrix());
-    // ... (multiplication)
+    assert_value("Test matrix multiplication with vector", test_matrix_multiplication_with_vector());
+    assert_value("Test matrix multiplication with matrix", test_matrix_multiplication_with_matrix());
     assert_value("Test matrix conversion to vector", test_matrix_conversion_to_vector());
     destroy();
     return 0;

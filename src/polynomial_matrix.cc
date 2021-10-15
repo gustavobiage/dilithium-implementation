@@ -80,7 +80,7 @@ struct polynomial_matrix<P, M2, N, Q> polynomial_matrix<P, M, N, Q>::operator*(c
 		for (int j = 0; j < M2; j++) {
 			c[i][j] = 0;
 			for (int k = 0; k < M; k++) {
-				c[i][j] += a[i][j] * b[k][j]; 
+				c[i][j] = c[i][j] + (a[i][k] * b[k][j]);
 			}
 		}
 	}
