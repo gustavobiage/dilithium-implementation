@@ -13,7 +13,7 @@ template <unsigned int M, unsigned int N, unsigned int Q>
 polynomial_vector<M, N, Q>::polynomial_vector(const struct polynomial_matrix<M, 1, N, Q> &b) {
     struct polynomial_vector<M, N, Q> & a = *this;
     for (int i = 0; i < M; i++) {
-        a[i] = b[i][1];
+        a[i] = b[i][0];
     }
 }
 

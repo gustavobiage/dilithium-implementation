@@ -6,7 +6,7 @@ polynomial_matrix<P, M, N, Q>::polynomial_matrix(const struct polynomial_vector<
 	if (M == 1) {
 		struct polynomial_matrix<P, 1, N, Q> & a = *this;
 		for (int i = 0; i < P; i++) {
-			a[i][1] = b[i];
+			a[i][0] = b[i];
 		}
 	} else {
 		throw std::domain_error("Vector to Matrix conversion requirer column matrix (constructor)");

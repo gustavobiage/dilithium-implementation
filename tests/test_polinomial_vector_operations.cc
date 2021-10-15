@@ -86,6 +86,7 @@ int test_vector_subtraction_with_vector() {
     struct polynomial_vector<M, N, Q> v3 = v1 - v2;
     for (int i = 0; i < M; i++) {
         if (v3[i][0] != a3[i]) {
+            printf("v3[%d][0] = %d; a3[%d] = %d\n", i, v3[i][0], i, a3[i]);
             return -1;
         }
     }
@@ -125,10 +126,10 @@ int test_vector_multiplication_with_matrix() {
     int a2[M] = {6, 7, 1, 9, 9};
     struct polynomial_matrix<1, M, N, Q> m1 = create_line_matrix<M, N, Q>(a2);
     int a3[M][M] = {{6, 7, 1, 9, 9},
-                    {36, 42, 6, 54, 54},
-                    {24, 28, 4, 36, 36},
-                    {12, 14, 2, 18, 18},
-                    {48, 56, 8, 72, 72}};
+                    {6, 2, 6, 4, 4},
+                    {4, 8, 4, 6, 6},
+                    {2, 4, 2, 8, 8},
+                    {8, 6, 8, 2, 2}};
     struct polynomial_matrix<M, M, N, Q> m2 = v1 * m1;
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < M; j++) {

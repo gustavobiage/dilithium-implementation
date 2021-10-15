@@ -51,8 +51,9 @@ struct polynomial<N, Q> polynomial<N, Q>::operator*(const struct polynomial<N, Q
     struct polynomial<N, Q> & a = *this;
     struct polynomial<N, Q> c;
     for (int i = 0; i < N; i++) {
+        c[i] = 0;
         for (int j = 0; j < N; j++) {
-            c[i] = (a[j] * b[(i - j + N) % N]) % Q;
+            c[i] = (c[i] + a[j] * b[(i - j + N) % N]) % Q;
         }
     }
     return c;

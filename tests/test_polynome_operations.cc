@@ -4,6 +4,7 @@
 
 const unsigned int Q = 10;
 const unsigned int N = 5;
+const unsigned int M = 3;
 
 int test_random_polynome_generation() {
     struct polynomial<N, Q> p = polynomial<N, Q>::generate_random_polynomial();
@@ -12,7 +13,7 @@ int test_random_polynome_generation() {
             return -1;
         }
     }
-    return 1;
+    return 0;
 }
 
 int test_polynome_asignment() {
@@ -60,7 +61,7 @@ int test_polynome_subtraction() {
 int test_polynome_multiplication() {
     const int c1[N] = {2, 7, 4, 9, 0};
     const int c2[N] = {6, 6, 2, 8, 5};
-    const int c3[N] = {0, 2, 4, 0, 8};
+    const int c3[N] = {7, 6, 5, 8, 8};
     struct polynomial<N, Q> p1(c1);
     struct polynomial<N, Q> p2(c2);
     struct polynomial<N, Q> p3 = p1 * p2;
@@ -73,7 +74,32 @@ int test_polynome_multiplication() {
 }
 
 int test_polynome_multiplication_with_vector() {
-    return -1;
+    const int c1[N] = {4, 0, 1, 0, 4};
+    struct polynomial<N, Q> p1(c1);
+    const int c2[M][N] = {
+        {4, 1, 6, 4, 3},
+        {5, 5, 8, 4, 2},
+        {1, 4, 3, 7, 8}
+    };
+    struct polynomial_vector<M, N, Q> v1;
+    for (int i = 0; i < M; i++) {
+        struct polynomial<N, Q> p(c2[i]);
+        v1[i] = p;
+    }
+    const int c3[M][N] = {
+        {4, 1, 4, 9, 4},
+        {4, 4, 3, 9, 6},
+        {7, 6, 1, 4, 9}
+    };
+    struct polynomial_vector<M, N, Q> v2 = p1 * v1;
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
+            if (v2[i][j] != c3[i][j]) {
+                return -1;
+            }
+        }
+    }
+    return 0;
 }
 
 int main() {
