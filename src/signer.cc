@@ -3,32 +3,60 @@
 template <unsigned int Q>
 int32_t high_order_bits(int32_t w, int32_t gamma) {
     std::pair<int32_t, int32_t> pair = decompose<Q>(w, gamma);
-    return pair.second;
+    return pair.first;
 }
 
 template <unsigned int Q>
-std::pair<int32_t, int32_t> decompose(int32_t w, int32_t gamma) {
+int32_t low_order_bits(int32_t w, int32_t gamma) {
+    std::pair<int32_t, int32_t> pair = decompose<Q>(w, gamma);
+    return pair.second;
+}
+
+int32_t cmod(int32_t r, int32_t alpha) {
+    if (r < 0 || r > 3 * alpha/2) {
+        throw std::domain_error("centralized reduction expects r in interval [0, 3*alpha/2]");
+    } else {
+        /* https://d-nb.info/1204223297/34; Reference Implementation p254
+         *
+         * Instead we use the following well-known trick to compute the centralized remainder 
+         * r′= r mod ± α where 0 ≤ r ≤ 3α/2. Subtracting α/2 + 1 from r yields a negative result
+         * if and only if r ≤ α/2. Therefore, shifting this result arithmetically to the right by
+         * 31 bits gives −1, i.e. the integer with all bits equal to 1, if r ≤ α/2 and 0 otherwise.
+         * Then the logical AND of the shifted value and α is added to r and α/2 − 1 subtracted.
+         * This results in r − α if r > α/2 and r if r ≤ α/2, i.e. the centralized remainder.
+         */
+        r = r - (alpha/2 + 1);
+        int shift = (r >> 31);
+        r = r + (shift & alpha);
+        r = r - (alpha/2 - 1);
+        return r;
+    }
+}
+
+template <unsigned int Q>
+std::pair<int32_t, int32_t> decompose(int32_t w, int32_t alpha) {
+    w = cmod(w, alpha);                 
     int32_t w0, w1;
-    w0 = w % gamma;
+    w0 = (w+alpha) % alpha;
     if (w - w0 == Q - 1) {
         w1 = 0;
         w0 = w0 - 1;
     } else {
-        w1 = (w - w0) / gamma;
+        w1 = (w - w0) / alpha;
     }
-    return std::make_pair(w0, w1);
+    return std::make_pair(w1, w0);
 }
 
 template <unsigned int K, unsigned int N, unsigned int Q>
-void bit_packing(byte * buffer, int from, polynomial_vector<K, N, Q> w1) {
+void bit_packing(polynomial_vector<K, N, Q> w1, byte * buffer) {
     int pointer = 0;
     for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
             int32_t coefficient = w1[i][j];
             if (pointer % 2) {
-                buffer[from + pointer/2] |= coefficient;
+                buffer[pointer/2] |= coefficient;
             } else {
-                buffer[from + pointer/2] = (coefficient << 4);
+                buffer[pointer/2] = (coefficient << 4);
             }
         }
     }
@@ -119,7 +147,7 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
     assert(message_size == 48); // Simple implementation require a 48 byte message
     memcpy(concat, message, message_size);
 
-    bit_packing(concat, message_size, w1);
+    bit_packing(w1, concat);
 
     CryptoPP::SHAKE256 shake(8);
     shake.Update((const byte *) &concat[0], concat_size);

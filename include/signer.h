@@ -6,6 +6,7 @@
 #include <polynomial.h>
 #include <random>
 #include <utility>
+#include <stdexcept>
 
 typedef unsigned char byte;
 

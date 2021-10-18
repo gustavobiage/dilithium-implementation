@@ -25,8 +25,37 @@ int test_sample_in_ball() {
     return 0;
 }
 
+int test_modular_operation() {
+    int b;
+    int gamma1 = GAMMA1;
+    for (int i = 0; i <= 3*gamma1/2; i++) {
+        b = cmod(i, gamma1);
+        if (b <= -(gamma1)/2 || b > gamma1/2) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int test_higher_and_low_order_bits() {
+    unsigned int a = 123000; // TODO: test all values
+    unsigned int b, c;
+    b = high_order_bits<Q>(a, GAMMA2);
+    c = low_order_bits<Q>(a, GAMMA2);
+    if ((b | c) != a) {
+        return -1;
+    }
+    return 0;
+}
+
+int test_bit_packing() {
+    return -1;
+}
+
 int main() {
     display_box("Testing dilithium signer operations");
     assert_value("Test sample in ball", test_sample_in_ball());
+    assert_value("Test modular operation", test_modular_operation());
+    assert_value("Test higher and low order bits", test_higher_and_low_order_bits());
     return 0;
 }
