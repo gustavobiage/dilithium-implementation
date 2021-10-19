@@ -35,9 +35,9 @@ int32_t cmod(int32_t r, int32_t alpha) {
 
 template <unsigned int Q>
 std::pair<int32_t, int32_t> decompose(int32_t w, int32_t alpha) {
-    w = cmod(w, alpha);                 
+    w = w % Q;
     int32_t w0, w1;
-    w0 = (w+alpha) % alpha;
+    w0 = cmod(w, alpha);
     if (w - w0 == Q - 1) {
         w1 = 0;
         w0 = w0 - 1;
@@ -47,10 +47,10 @@ std::pair<int32_t, int32_t> decompose(int32_t w, int32_t alpha) {
     return std::make_pair(w1, w0);
 }
 
-template <unsigned int K, unsigned int N, unsigned int Q>
-void bit_packing(polynomial_vector<K, N, Q> w1, byte * buffer) {
+template <unsigned int M, unsigned int N, unsigned int Q>
+void bit_packing(polynomial_vector<M, N, Q> w1, byte * buffer) {
     int pointer = 0;
-    for (int i = 0; i < K; i++) {
+    for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++) {
             int32_t coefficient = w1[i][j];
             if (pointer % 2) {
@@ -58,6 +58,7 @@ void bit_packing(polynomial_vector<K, N, Q> w1, byte * buffer) {
             } else {
                 buffer[pointer/2] = (coefficient << 4);
             }
+            pointer++;
         }
     }
 }
@@ -165,25 +166,26 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
     display_status_result("OK!"); new_line();
     display_status_header("testing for rejection");
 
-    // for (int i = 0; i < L; i++) {
-    //     for (int j = 0; j < N; j++) {
-    //         if (z[i][j] > GAMMA1 - BETA) {
-    //             display_status_result("ERROR!"); new_line();
-    //             goto REJECT;
-    //         }
-    //     }
-    // }
+    for (int i = 0; i < L; i++) {
+        for (int j = 0; j < N; j++) {
+            if (z[i][j] > GAMMA1 - BETA) {
+                display_status_result("ERROR!"); new_line();
+                goto REJECT;
+            }
+        }
+    }
 
     polynomial_vector<K, N, Q> z2 = (sk.A * z) - (c * sk.t);
 
-    // for (int i = 0; i < K; i++) {
-    //     for (int j = 0; j < N; j++) {
-    //         if (z2[i][j] > GAMMA2 - BETA) {
-    //             display_status_result("ERROR!"); new_line();
-    //             goto REJECT;
-    //         }
-    //     }
-    // }
+    for (int i = 0; i < K; i++) {
+        for (int j = 0; j < N; j++) {
+            unsigned int lower_bits = low_order_bits<Q>(z2[i][j], GAMMA1); 
+            if (lower_bits > GAMMA2 - BETA) {
+                display_status_result("ERROR!"); new_line();
+                goto REJECT;
+            }
+        }
+    }
 
     display_status_result("OK!"); new_line();
 

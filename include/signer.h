@@ -22,8 +22,8 @@ int32_t high_order_bits(int32_t, int32_t);
 template <unsigned int Q>
 std::pair<int32_t, int32_t> decompose(int32_t, int32_t);
 
-template <unsigned int K, unsigned int N, unsigned int Q>
-void bit_packing(byte *, int, polynomial_vector<K, N, Q>);
+template <unsigned int M, unsigned int N, unsigned int Q>
+void bit_packing(byte *, int, polynomial_vector<M, N, Q>);
 
 template <unsigned int N, unsigned int Q>
 polynomial<N, Q> sample_in_ball(byte *, int);
