@@ -3,13 +3,14 @@
 
 template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int ETA>
 struct key_pair<K, L, N, Q> generate_key_pair() {
+#ifdef OUTPUT
 	display_box("Generating key pair with prameters:",
 				"K", K,
 				"L", L,
 				"Q", Q,
 				"ETA", ETA);
-
 	display_status_header("Generating A matrix");
+#endif
 
 	struct polynomial_matrix<K, L, N, Q> A;
 	for (int i = 0; i < K; i++) {
@@ -18,8 +19,10 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 		}
 	}
 
+#ifdef OUTPUT
 	display_status_result("OK!"); new_line();
 	display_status_header("Generating s1 vector");
+#endif
 
 	struct polynomial_vector<L, N, Q> s1;
 	for (int i = 0; i < L; i++) {
@@ -27,8 +30,10 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 		s1[i] = static_cast<struct polynomial<N, Q>>(polynomial<N, ETA>::generate_random_polynomial());
 	}
 
+#ifdef OUTPUT
 	display_status_result("OK!"); new_line();
 	display_status_header("Generating s2 vector");
+#endif
 
 	struct polynomial_vector<K, N, Q> s2;
 	for (int i = 0; i < K; i++) {
@@ -36,12 +41,16 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 		s2[i] = static_cast<struct polynomial<N, Q>>(polynomial<N, ETA>::generate_random_polynomial());;
 	}
 
+#ifdef OUTPUT
 	display_status_result("OK!"); new_line();
 	display_status_header("Generating t vector");
+#endif
 
 	struct polynomial_vector<K, N, Q> t = (A * s1) + s2;;
 
+#ifdef OUTPUT
 	display_status_result("OK!"); new_line();
+#endif
 
 	struct public_key<K, L, N, Q> pk;
 	pk.A = A;

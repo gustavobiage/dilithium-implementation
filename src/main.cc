@@ -1,5 +1,8 @@
+#define OUTPUT
+
 #include <key_generation.h>
 #include <signer.h>
+#include <verifier.h>
 #include <dilithium_iv.h>
 #include <time.h>
 
@@ -14,5 +17,9 @@ int main(int argc, const char ** argv) {
 
 	struct signature<L, N, Q> signature = sign<BETA, GAMMA1, GAMMA2, K, L, N, Q>(key_pair.secret_key, message, 48);
 
-	return 0;
+	if (verify<BETA, GAMMA1, GAMMA2, K, L, N, Q>(signature, message, 48, key_pair.public_key)) {
+		return 0;
+	} else {
+		return -1;
+	}
 }

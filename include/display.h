@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_WIDTH 50
+#define MAX_WIDTH 60
 
 void new_line();
 

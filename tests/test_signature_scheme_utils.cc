@@ -40,34 +40,45 @@ struct polynomial_vector<M_, N_, Q_> create_vector(int polynomes_indexes[M_]) {
 }
 
 int test_sample_in_ball() {
-    byte digest[8];
-    for (int i = 0; i < 8; i++) {
-        digest[i] = digest_byte;
-    }
-    struct polynomial<N, Q> c = sample_in_ball<N, Q>(digest, 60);
-    int cnt[3] = {0, 0, 0};
+    const int w1_packed_size = 10;
+
+    byte message[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+    byte w1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    struct polynomial<N, Q> c1 = sample_in_ball<N, Q>(message, w1, w1_packed_size, 60);
+    struct polynomial<N, Q> c2 = sample_in_ball<N, Q>(message, w1, w1_packed_size, 60);
+    
+    int cnt1[3] = {0, 0, 0};
+    int cnt2[3] = {0, 0, 0};
     for (int i = 0; i < N; i++) {
-        cnt[INDEX(c[i])]++;
+        cnt1[INDEX(c1[i])]++;
+        cnt2[INDEX(c2[i])]++;
+        if (c1[i] != c2[i]) {
+            return -1;
+        }
     }
-    if (cnt[MINUS_ONE] != 30 || cnt[ZERO] != N - 60 || cnt[ONE] != 30) {
+
+    if (cnt1[MINUS_ONE] + cnt1[ONE] != 60 || cnt1[ZERO] != N - 60 ||
+        cnt2[MINUS_ONE] + cnt2[ONE] != 60 || cnt2[ZERO] != N - 60) {
         return -1;
     }
+
     return 0;
 }
 
 int test_modular_operation() {
     int b;
-    int gamma1 = GAMMA1;
-    for (int i = 0; i <= 3*gamma1/2; i++) {
-        b = cmod(i, gamma1);
+    int _2_gamma2 = 2*GAMMA2;
+    for (int i = 0; i <= 3*_2_gamma2/2; i++) {
+        b = cmod(i, _2_gamma2);
         // assert range
-        if (b <= -(gamma1)/2 || b > gamma1/2) {
+        if (b <= -(_2_gamma2)/2 || b > _2_gamma2/2) {
             return -1;
         }
         // assert result
-        if (i <= gamma1/2 && b != i) {
+        if (i <= _2_gamma2/2 && b != i) {
             return -1;
-        } else if (i > gamma1/2 && b + gamma1 != i) {
+        } else if (i > _2_gamma2/2 && b + _2_gamma2 != i) {
             return -1;
         }
         
@@ -76,13 +87,13 @@ int test_modular_operation() {
 }
 
 int test_higher_and_low_order_bits() {
-    int gamma1 = GAMMA1;
-    for (int i = 0; i <= 3*gamma1/2; i++) {
+    int _2_gamma2 = 2*GAMMA2;
+    for (int i = 0; i <= 3*_2_gamma2/2; i++) {
         unsigned int w = i;
         unsigned int higher, lower;
-        higher = high_order_bits<Q>(w, gamma1);
-        lower = low_order_bits<Q>(w, gamma1);
-        if (higher * gamma1 + lower != w) {
+        higher = high_order_bits<Q>(w, _2_gamma2);
+        lower = low_order_bits<Q>(w, _2_gamma2);
+        if (higher * _2_gamma2 + lower != w) {
             return -1;
         }
         if (GAMMA2 < lower && lower < -GAMMA2) {
@@ -109,7 +120,7 @@ int test_bit_packing() {
 
 int main() {
     init();
-    display_box("Testing dilithium signer operations");
+    display_box("Testing signature scheme utils");
     assert_value("Test sample in ball", test_sample_in_ball());
     assert_value("Test modular operation", test_modular_operation());
     assert_value("Test higher and low order bits", test_higher_and_low_order_bits());
