@@ -39,7 +39,7 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
     polynomial_vector<K, N, Q> w1;
     for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
-            w1[i][j] = high_order_bits<Q>(Ay[i][j], 2*GAMMA2); 
+            w1[i][j] = high_order_bits<Q>(Ay[i][j], 2*GAMMA2);
         }
     }
 

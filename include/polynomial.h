@@ -21,8 +21,6 @@ struct polynomial {
 
 	polynomial() {}
 
-	// polynomial(int [N]);
-
 	polynomial(const int [N]);
 
 	template <unsigned int Q2>
@@ -58,8 +56,6 @@ template <unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_vector {
     struct polynomial<N, Q> vector[M];
 
-	struct polynomial_vector<M, N, Q> operator=(const struct polynomial_vector<M, N, Q> &);
-
 	polynomial_vector() {}
 
 	/* Constructor allows static cast between polynomial of different modulus */
@@ -75,6 +71,8 @@ struct polynomial_vector {
 
 	template <unsigned int M2>
 	struct polynomial_matrix<M, M2, N, Q> operator*(const struct polynomial_matrix<1, M2, N, Q>&);
+
+	struct polynomial_vector<M, N, Q> & operator=(const struct polynomial_vector<M, N, Q> &);
 
 	// Referencing returns matrix
 	struct polynomial_matrix<M, 1, N, Q> operator&();
@@ -101,6 +99,8 @@ struct polynomial_matrix {
 	struct polynomial_matrix<P, M, N, Q> operator-(const struct polynomial_matrix<P, M, N, Q>&);
 
 	struct polynomial_matrix<P, M, N, Q> operator-(const struct polynomial_vector<P, N, Q>&);
+
+	struct polynomial_matrix<P, M, N, Q> & operator=(const struct polynomial_matrix<P, M, N, Q>&);
 
 	template <unsigned int M2>
 	struct polynomial_matrix<P, M2, N, Q> operator*(const polynomial_matrix<M, M2, N, Q> &);

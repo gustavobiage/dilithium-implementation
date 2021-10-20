@@ -68,3 +68,29 @@ struct key_pair<K, L, N, Q> generate_key_pair() {
 
 	return key_pair;
 }
+
+template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
+struct secret_key<K, L, N, Q> & secret_key<K, L, N, Q>::operator=(const struct secret_key<K, L, N, Q> & b) {
+	struct secret_key<K, L, N, Q> & a = *this;
+	a.A = b.A;
+	a.t = b.t;
+	a.s1 = b.s1;
+	a.s2 = b.s2;
+	return a;
+}
+
+template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
+struct public_key<K, L, N, Q> & public_key<K, L, N, Q>::operator=(const struct public_key<K, L, N, Q> & b) {
+	struct public_key<K, L, N, Q> & a = *this;
+	a.A = b.A;
+	a.t = b.t;
+	return a;
+}
+
+template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q>
+struct key_pair<K, L, N, Q> & key_pair<K, L, N, Q>::operator=(const struct key_pair<K, L, N, Q> & b) {
+	struct key_pair<K, L, N, Q> & a = *this;
+	a.public_key = b.public_key;
+	a.secret_key = b.secret_key;
+	return a;
+}

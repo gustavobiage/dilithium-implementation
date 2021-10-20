@@ -14,7 +14,9 @@ int32_t low_order_bits(int32_t w, int32_t gamma) {
 
 int32_t cmod(int32_t r, int32_t alpha) {
     if (r < 0 || r > 3 * alpha/2) {
-        throw std::domain_error("centralized reduction expects r in interval [0, 3*alpha/2]");
+        char message[100];
+        sprintf(message, "centralized reduction expects r(as %d) in interval [0, %d]", r, 3*alpha/2);
+        throw std::domain_error(message);
     } else {
         /* https://d-nb.info/1204223297/34; Reference Implementation p254
          *

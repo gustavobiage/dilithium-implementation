@@ -1,8 +1,8 @@
 /* Included on header file */
 
 template <unsigned int M, unsigned int N, unsigned int Q>
-struct polynomial_vector<M, N, Q> polynomial_vector<M, N, Q>::operator=(const struct polynomial_vector<M, N, Q> & b) {
-    struct polynomial_vector<M, N, Q> a;
+struct polynomial_vector<M, N, Q> & polynomial_vector<M, N, Q>::operator=(const struct polynomial_vector<M, N, Q> & b) {
+    struct polynomial_vector<M, N, Q> & a = *this;
     for (int i = 0; i < M; i++) {
         a[i] = b[i];
     }

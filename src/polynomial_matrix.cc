@@ -14,6 +14,15 @@ polynomial_matrix<P, M, N, Q>::polynomial_matrix(const struct polynomial_vector<
 }
 
 template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_matrix<P, M, N, Q> & polynomial_matrix<P, M, N, Q>::operator=(const struct polynomial_matrix<P, M, N, Q>&b ) {
+	struct polynomial_matrix<P, M, N, Q> & a = *this;
+	for (int i = 0; i < P; i++) {
+		a[i] = b[i];
+	}
+	return a;
+}
+
+template<unsigned int P, unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_vector<M, N, Q> & polynomial_matrix<P, M, N, Q>::operator[](int index) {
     return matrix[index];
 }
