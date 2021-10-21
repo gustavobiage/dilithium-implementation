@@ -70,7 +70,7 @@ int test_modular_operation() {
     int b;
     int _2_gamma2 = 2*GAMMA2;
     for (int i = 0; i <= 3*_2_gamma2/2; i++) {
-        b = cmod(i, _2_gamma2);
+        b = cmod<Q>(i, _2_gamma2);
         // assert range
         if (b <= -(_2_gamma2)/2 || b > _2_gamma2/2) {
             return -1;

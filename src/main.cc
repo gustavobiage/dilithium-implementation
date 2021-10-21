@@ -3,7 +3,7 @@
 #include <key_generation.h>
 #include <signer.h>
 #include <verifier.h>
-#include <dilithium_iv.h>
+#include <dilithium_i.h>
 #include <time.h>
 
 int main(int argc, const char ** argv) {

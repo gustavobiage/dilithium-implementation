@@ -11,6 +11,7 @@ int32_t high_order_bits(int32_t, int32_t);
 template <unsigned int Q>
 int32_t low_order_bits(int32_t, int32_t);
 
+template <unsigned int Q>
 int32_t cmod(int32_t, int32_t);
 
 template <unsigned int Q>

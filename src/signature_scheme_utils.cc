@@ -12,10 +12,11 @@ int32_t low_order_bits(int32_t w, int32_t gamma) {
     return pair.second;
 }
 
+template <unsigned int Q>
 int32_t cmod(int32_t r, int32_t alpha) {
-    if (r < 0 || r > 3 * alpha/2) {
+    if (r < 0 || r > Q) {
         char message[100];
-        sprintf(message, "centralized reduction expects r(as %d) in interval [0, %d]", r, 3*alpha/2);
+        sprintf(message, "centralized reduction expects r (as %d) in interval [0, %d]", r, Q);
         throw std::domain_error(message);
     } else {
         /* https://d-nb.info/1204223297/34; Reference Implementation p254
@@ -39,7 +40,7 @@ template <unsigned int Q>
 std::pair<int32_t, int32_t> decompose(int32_t w, int32_t alpha) {
     w = w % Q;
     int32_t w0, w1;
-    w0 = cmod(w, alpha);
+    w0 = cmod<Q>(w, alpha);
     if (w - w0 == Q - 1) {
         w1 = 0;
         w0 = w0 - 1;
@@ -113,7 +114,7 @@ polynomial<N, Q> sample_in_ball(byte * mu, byte * w1, int w1_packed_size, int h)
 
     /* Fisher–Yates shuffle - with SHAKE for generating coefficient indexes*/
     for (int i = 0; i < h; i++) {
-        replace = h - 1 - i;
+        replace = N - 1 - i;
         do {
             if (pos >= SHAKE256_BLOCK_SIZE) {
                 shake.Final(stream);
