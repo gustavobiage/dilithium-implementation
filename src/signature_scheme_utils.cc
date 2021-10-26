@@ -28,41 +28,21 @@ int32_t cmod(int32_t r, int32_t alpha) {
          * Then the logical AND of the shifted value and α is added to r and α/2 − 1 subtracted.
          * This results in r − α if r > α/2 and r if r ≤ α/2, i.e. the centralized remainder.
          */
-        int t = r & 0x7FFFF;
-        t = t + ((r >> 19) << 9);
-        t = t - (alpha/2 + 1);
-        int shift = (t >> 31);
-        t = t + (shift & alpha);
-        t = t - (alpha/2 - 1);
-        return t;
+        r = r % alpha;
+        r = r - (alpha/2 + 1);
+        int shift = (r >> 31);
+        r = r + (shift & alpha);
+        r = r - (alpha/2 - 1);
+        return r;
     }
 }
 
-template <unsigned int Q>
-int32_t cmod2(int32_t r, int32_t alpha) {
-    if (r < 0 || r >= Q) {
-        char message[100];
-        sprintf(message, "centralized reduction expects r (as %d) in interval [0, %d]", r, Q);
-        throw std::domain_error(message);
-    } else {
-        /* https://d-nb.info/1204223297/34; Reference Implementation p254
-         *
-         * Instead we use the following well-known trick to compute the centralized remainder 
-         * r′= r mod ± α where 0 ≤ r ≤ 3α/2. Subtracting α/2 + 1 from r yields a negative result
-         * if and only if r ≤ α/2. Therefore, shifting this result arithmetically to the right by
-         * 31 bits gives −1, i.e. the integer with all bits equal to 1, if r ≤ α/2 and 0 otherwise.
-         * Then the logical AND of the shifted value and α is added to r and α/2 − 1 subtracted.
-         * This results in r − α if r > α/2 and r if r ≤ α/2, i.e. the centralized remainder.
-         */
-        int t = r % alpha;
-        t = t - (alpha/2 + 1);
-        int shift = (t >> 31);
-        t = t + (shift & alpha);
-        t = t - (alpha/2 - 1);
-        return t;
-    }
-}
-
+/*
+ * For element w, compute high and low bits w0, w1 such
+ * that w = w1* alpha + w0 with -alpha/2 < w0 <= alpha/2 except
+ * if w = Q-1 where w1 = 0 and w0 = -1. Assumes a to be standard
+ * representative.
+ */
 template <unsigned int Q>
 std::pair<int32_t, int32_t> decompose(int32_t w, int32_t alpha) {
     w = w % Q;

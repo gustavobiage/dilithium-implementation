@@ -5,7 +5,7 @@
 #include <result.h>
 #include <dilithium_i.h>
 
-#define AMOUNT 1
+#define AMOUNT 15
 
 byte * create_message() {
     // Generate random message
@@ -45,7 +45,10 @@ int test_multiple_messages_with_multiple_keys() {
         delete_message(messages[i]);
     }
 
-    return all_valid;
+    if (!all_valid) {
+        return -1;
+    }
+    return 0;
 }
 
 int test_multiple_messages_with_single_key() {
@@ -72,7 +75,10 @@ int test_multiple_messages_with_single_key() {
         delete_message(messages[i]);
     }
 
-    return all_valid;
+    if (!all_valid) {
+        return -1;
+    }
+    return 0;
 }
 
 int test_single_message_with_multiple_key() {
@@ -99,7 +105,7 @@ int test_single_message_with_single_key() {
     byte * message = create_message();
     struct key_pair<K, L, N, Q> key_pair = generate_key_pair<K, L, N, Q, ETA>();
     struct signature<L, N, Q> signature = sign<BETA, GAMMA1, GAMMA2, K, L, N, Q>(key_pair.secret_key, message, 48);
-    
+
     if (!verify<BETA, GAMMA1, GAMMA2, K, L, N, Q>(signature, message, 48, key_pair.public_key)) {
         delete_message(message);
         return -1;

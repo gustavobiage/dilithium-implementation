@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include <math_utils.h>
 #include <uniform_distribution.h>
 #include <stdexcept>
 
