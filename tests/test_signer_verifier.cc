@@ -1,5 +1,3 @@
-#define OUTPUT
-
 #include <time.h>
 #include <key_generation.h>
 #include <verifier.h>
@@ -111,11 +109,77 @@ int test_single_message_with_single_key() {
     return 0;
 }
 
+int test_scheme_correctness() {
+    const unsigned int iterations = 100;
+    const int c1 = 30;
+    const int c2 = 60;
+
+    for (int it = 0; it < iterations; it++) {
+
+        REJECT:
+
+        polynomial_vector<L, N, Q> y;
+        for (int i = 0; i < L; i++) {
+            y[i] = polynomial<N, GAMMA1>::generate_random_polynomial();
+        }
+
+        polynomial<N, Q> c;
+        for (int i = 0; i < c1; i++) {
+            c[i] = -1;
+        }
+        for (int i = c1; i < c2; i++) {
+            c[i] = 1;
+        }
+        for (int i = c2; i < N; i++) {
+            c[i] = 0;
+        }
+
+        struct key_pair<K, L, N, Q> kp = generate_key_pair<K, L, N, Q, ETA>();
+        polynomial_vector<L, N, Q> z = y + (c * kp.secret_key.s1);
+
+        polynomial_vector<K, N, Q> Ay = kp.secret_key.A * y;
+        polynomial_vector<K, N, Q> cs2 = c * kp.secret_key.s2;
+        polynomial_vector<K, N, Q> a = Ay - cs2;
+
+        polynomial_vector<K, N, Q> Az = kp.secret_key.A * z;
+        polynomial_vector<K, N, Q> ct = c * kp.secret_key.t;
+        polynomial_vector<K, N, Q> b = Az - ct;
+
+        for (int i = 0; i < L; i++) {
+            for (int j = 0; j < N; j++) {
+                if (z[i][j] > GAMMA1 - BETA) {
+                    goto REJECT;
+                }
+            }
+        }
+
+        for (int i = 0; i < K; i++) {
+            for (int j = 0; j < N; j++) {
+                int lower_bits = low_order_bits<Q>(b[i][j], 2*GAMMA2);
+                if (lower_bits > (int)(GAMMA2 - BETA)) {
+                    goto REJECT;
+                }
+            }
+        }
+
+        // Ay - cs2 must be equal to Az - ct
+        for (int i = 0; i < K; i++) {
+            for (int j = 0; j < N; j++) {
+                if (a[i][j] != b[i][j]) {
+                    return -1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 int main() {
-    // display_box("Testing Signer, Verifier and Key Generation");
-    // assert_value("Test multiple messages with multiple keys", test_multiple_messages_with_multiple_keys());
-    // assert_value("Test multiple messages with single key", test_multiple_messages_with_single_key());
-    // assert_value("Test single message with multiple key", test_single_message_with_multiple_key());
-    // assert_value("Test single message with single key", test_single_message_with_single_key());
+    display_box("Testing Signer, Verifier and Key Generation");
+    assert_value("Test scheme correctness", test_scheme_correctness());
+    assert_value("Test multiple messages with multiple keys", test_multiple_messages_with_multiple_keys());
+    assert_value("Test multiple messages with single key", test_multiple_messages_with_single_key());
+    assert_value("Test single message with multiple key", test_single_message_with_multiple_key());
+    assert_value("Test single message with single key", test_single_message_with_single_key());
     return 0;
 }

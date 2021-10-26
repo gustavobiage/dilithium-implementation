@@ -2,6 +2,7 @@
 #include <result.h>
 #include <polynomial.h>
 #include <dilithium_i.h>
+#include <utility>
 
 #define INDEX(x) (x+1)
 #define MINUS_ONE 0
@@ -67,18 +68,19 @@ int test_sample_in_ball() {
 }
 
 int test_modular_operation() {
-    int b;
+    int b, value;
     int _2_gamma2 = 2*GAMMA2;
-    for (int i = 0; i <= 3*_2_gamma2/2; i++) {
+    for (int i = 0; i < (int) Q; i++) {
         b = cmod<Q>(i, _2_gamma2);
+        value = i % _2_gamma2;
         // assert range
-        if (b <= -(_2_gamma2)/2 || b > _2_gamma2/2) {
+        if (b <= (int) -GAMMA2 || b > (int) GAMMA2) {
             return -1;
         }
         // assert result
-        if (i <= _2_gamma2/2 && b != i) {
+        if (value <= (int) GAMMA2 && b != value) {
             return -1;
-        } else if (i > _2_gamma2/2 && b + _2_gamma2 != i) {
+        } else if (value > (int) GAMMA2 && b + _2_gamma2 != value) {
             return -1;
         }
         
@@ -88,15 +90,16 @@ int test_modular_operation() {
 
 int test_higher_and_low_order_bits() {
     int _2_gamma2 = 2*GAMMA2;
-    for (int i = 0; i <= 3*_2_gamma2/2; i++) {
-        unsigned int w = i;
-        unsigned int higher, lower;
-        higher = high_order_bits<Q>(w, _2_gamma2);
-        lower = low_order_bits<Q>(w, _2_gamma2);
-        if (higher * _2_gamma2 + lower != w) {
+    int w, value;
+    int higher, lower;
+    for (int i = 0; i < Q; i++) {
+        w = i;
+        std::pair<int32_t, int32_t> p = decompose<Q>(w, _2_gamma2);
+        higher = p.first;
+        lower = p.second;
+        if ((higher * _2_gamma2 + lower + Q) % Q != w) {
             return -1;
-        }
-        if (GAMMA2 < lower && lower < -GAMMA2) {
+        } else if ((int) GAMMA2 < lower && lower < (int) -GAMMA2) {
             return -1;
         }
     }

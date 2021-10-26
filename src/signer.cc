@@ -29,7 +29,7 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
 	display_status_header("Generating Ay vector");
 #endif
 
-    polynomial_vector<K, N, Q> Ay = *(sk.A * &y);
+    polynomial_vector<K, N, Q> Ay = sk.A * y;
 
 #ifdef OUTPUT
     display_status_result("OK!"); new_line();
@@ -68,6 +68,25 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
 
 #ifdef OUTPUT
     display_status_result("OK!"); new_line();
+    display_status_header("Constructing c * s2");
+#endif
+
+    polynomial_vector<K, N, Q> cs2 = c * sk.s2;
+
+#ifdef OUTPUT
+    bool correct_c2 = true;
+    for (int i = 0; i < K && correct_c2; i++) {
+        for (int j = 0; j < N && correct_c2; j++) {
+            if (cs2[i][j] >= (int) BETA) {
+                correct_c2 = false;
+            }
+        }
+    }
+    if (correct_c2) {
+        display_status_result("OK!"); new_line();
+    } else {
+        display_status_result("ERROR!"); new_line();
+    }
     display_status_header("testing for rejection");
 #endif
 
@@ -82,12 +101,15 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
         }
     }
 
-    polynomial_vector<K, N, Q> z2 = (sk.A * z) - (c * sk.t);
+    polynomial_vector<K, N, Q> z2 = Ay - cs2;
 
     for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
-            unsigned int lower_bits = low_order_bits<Q>(z2[i][j], GAMMA1); 
-            if (lower_bits > GAMMA2 - BETA) {
+            int lower_bits = low_order_bits<Q>(z2[i][j], 2*GAMMA2);
+            if (lower_bits < 0) {
+                lower_bits = -lower_bits;
+            }
+            if (lower_bits >= (int)(GAMMA2 - BETA)) {
                 #ifdef OUTPUT
                     display_status_result("ERROR!"); new_line();
                 #endif

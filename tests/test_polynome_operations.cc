@@ -5,12 +5,22 @@
 const unsigned int Q = 10;
 const unsigned int N = 5;
 const unsigned int M = 3;
+const unsigned int GAMMA = 5;
 
 int test_random_polynome_generation() {
     struct polynomial<N, Q> p = polynomial<N, Q>::generate_random_polynomial();
     for (int i = 0; i < N; i++) {
         if (p[i] < 0 || p[i] >= Q) {
             return -1;
+        }
+    }
+    struct polynomial_vector<M, N, Q> p2;
+    for (int i = 0; i < M; i++) {
+        p2[i] = polynomial<N, GAMMA>::generate_random_polynomial();
+        for (int j = 0; j < N; j++) {
+            if (p2[i][j] < 0 || p2[i][j] >= GAMMA) {
+                return -1;
+            }
         }
     }
     return 0;
