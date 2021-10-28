@@ -79,8 +79,8 @@ struct signature<L, N, Q> sign(struct secret_key<K, L, N, Q> & sk, byte message[
     for (int i = 0; i < K && correct_c2; i++) {
         for (int j = 0; j < N && correct_c2; j++) {
             coefficient = (cs2[i][j] + BETA) % Q;
+            // coefficient < BETA or coefficient + BETA < 2 * BETA
             if (coefficient >= (int) 2 * BETA) {
-                printf("cs2 = %d\n", coefficient);
                 correct_c2 = false;
             }
         }
