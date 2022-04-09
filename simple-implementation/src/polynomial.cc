@@ -50,13 +50,20 @@ template <unsigned int N, unsigned int Q>
 struct polynomial<N, Q> polynomial<N, Q>::operator*(const struct polynomial<N, Q> & b) {
     struct polynomial<N, Q> & a = *this;
     struct polynomial<N, Q> c;
-    for (int i = 0; i < N; i++) {
-        c[i] = 0;
-        for (int j = 0; j < N; j++) {
-            int64_t multiplication = (int64_t) a[j] * b[(i - j + N) % N];
-            multiplication = (multiplication + Q) % Q;
-            c[i] = (c[i] + multiplication) % Q;
+    int32_t r[2*N] = {0};
+    // multiply polynomials
+    for(int i = 0; i < N; i++) {
+        for(int j = 0; j < N; j++) {
+            r[i+j] = (r[i+j] + (int64_t) a[i] * b[j]) % Q;
         }
+    }
+    // remainder of division by (x^n + 1)
+    for (int i = N; i < 2*N; i++) {
+        r[i-N] = ((int64_t) r[i-N] - r[i] + Q) % Q;
+    }
+    // copy result to polynomial c (c = a * b)
+    for(int i = 0; i < N; i++) {
+        c[i] = r[i];
     }
     return c;
 }
