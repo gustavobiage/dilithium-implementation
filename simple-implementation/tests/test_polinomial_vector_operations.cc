@@ -24,7 +24,7 @@ template <unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_vector<M, N, Q> create_vector(int polynomes_indexes[M]) {
     struct polynomial_vector<M, N, Q> v;
     for (int i = 0; i < M; i++) {
-        v[i] = *p[polynomes_indexes[i]];
+        v[i] = *(p[polynomes_indexes[i]]);
     }
     return v;
 }

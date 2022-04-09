@@ -35,9 +35,29 @@ struct polynomial_matrix<M, 1, N, Q> polynomial_vector<M, N, Q>::operator+(const
 }
 
 template <unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_vector<M, N, Q> polynomial_vector<M, N, Q>::operator+(const struct polynomial_vector<M, N, Q>& b) {
+    struct polynomial_vector<M, N, Q> a = &(*this);
+    struct polynomial_vector<M, N, Q> c;
+    for (int i = 0; i < M; i++) {
+        c[i] = a[i] + b[i];
+    }
+    return c;
+}
+
+template <unsigned int M, unsigned int N, unsigned int Q>
 struct polynomial_matrix<M, 1, N, Q> polynomial_vector<M, N, Q>::operator-(const struct polynomial_matrix<M, 1, N, Q>& b) {
     struct polynomial_matrix<M, 1, N, Q> a = &(*this);
     struct polynomial_matrix<M, 1, N, Q> c = a - b;
+    return c;
+}
+
+template <unsigned int M, unsigned int N, unsigned int Q>
+struct polynomial_vector<M, N, Q> polynomial_vector<M, N, Q>::operator-(const struct polynomial_vector<M, N, Q>& b) {
+    struct polynomial_vector<M, N, Q> a = &(*this);
+    struct polynomial_vector<M, N, Q> c;
+    for (int i = 0; i < M; i++) {
+        c[i] = a[i] - b[i];
+    }
     return c;
 }
 

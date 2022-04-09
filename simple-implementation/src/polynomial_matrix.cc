@@ -37,9 +37,7 @@ struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator+(co
 	struct polynomial_matrix<P, M, N, Q> c;
     struct polynomial_matrix<P, M, N, Q> & a = *this;
     for (int i = 0; i < P; i++) {
-        for (int j = 0; j < M; j++) {
-            c[i][j] = a[i][j] + b[i][j];
-        }
+        c[i] = a[i] + b[i];
     }
     return c;
 }
@@ -52,7 +50,7 @@ struct polynomial_matrix<P, M, N, Q> polynomial_matrix<P, M, N, Q>::operator+(co
 		struct polynomial_matrix<P, 1, N, Q> c = a + b;
 		return c;
 	} else {
-		throw std::domain_error("Vector to Matrix conversion requirer column matrix (polynomial_matrix<P, M, N, Q>::operator+)");
+		throw std::domain_error("matrix-vector addition requirer matrix to be a column matrix (polynomial_matrix<P, M, N, Q>::operator+)");
 	}
 }
 

@@ -66,7 +66,11 @@ struct polynomial_vector {
 
 	struct polynomial_matrix<M, 1, N, Q> operator+(const struct polynomial_matrix<M, 1, N, Q>&);
 
+	struct polynomial_vector<M, N, Q> operator+(const struct polynomial_vector<M, N, Q>& b);
+
 	struct polynomial_matrix<M, 1, N, Q> operator-(const struct polynomial_matrix<M, 1, N, Q>&);
+
+	struct polynomial_vector<M, N, Q> operator-(const struct polynomial_vector<M, N, Q>& b);
 
 	template <unsigned int M2>
 	struct polynomial_matrix<M, M2, N, Q> operator*(const struct polynomial_matrix<1, M2, N, Q>&);

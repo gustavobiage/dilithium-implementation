@@ -71,7 +71,7 @@ int test_polynome_subtraction() {
 int test_polynome_multiplication() {
     const int c1[N] = {2, 7, 4, 9, 0};
     const int c2[N] = {6, 6, 2, 8, 5};
-    const int c3[N] = {7, 6, 5, 8, 8};
+    const int c3[N] = {7, 2, 5, 8, 8};
     struct polynomial<N, Q> p1(c1);
     struct polynomial<N, Q> p2(c2);
     struct polynomial<N, Q> p3 = p1 * p2;
@@ -97,9 +97,12 @@ int test_polynome_multiplication_with_vector() {
         v1[i] = p;
     }
     const int c3[M][N] = {
-        {4, 1, 4, 9, 4},
-        {4, 4, 3, 9, 6},
-        {7, 6, 1, 4, 9}
+        // 34*x^4 + 5*x^3 + 12*x^2 - 23*x + 8
+        {8, 7, 2, 5, 4},
+        // 36*x^4 + 13*x^3 + 21*x^2 - 14*x - 4
+        {6, 6, 1, 3, 6},
+        // 39*x^4 - 15*x^2 - 4*x - 19
+        {1, 6, 5, 0, 9}
     };
     struct polynomial_vector<M, N, Q> v2 = p1 * v1;
     for (int i = 0; i < M; i++) {
