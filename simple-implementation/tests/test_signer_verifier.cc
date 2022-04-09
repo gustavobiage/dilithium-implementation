@@ -5,7 +5,7 @@
 #include <result.h>
 #include <dilithium_i.h>
 
-#define AMOUNT 2
+#define AMOUNT 15
 
 byte * create_message() {
     // Generate random message
