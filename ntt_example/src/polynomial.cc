@@ -125,6 +125,42 @@ struct polynomial<N, Q, W> polynomial<N, Q, W>::generate_random_polynomial() {
 template <unsigned int N, unsigned int Q, unsigned int W>
 zeta_array<N, Q, W> polynomial<N, Q, W>::zetas;
 
+//////////////////////////////////////////////////////////////////////////
+// Montgomery reduction
+//////////////////////////////////////////////////////////////////////////
+// template <unsigned int N, unsigned int Q, unsigned int W>
+// struct ntt_polynomial<N, Q, W> polynomial<N, Q, W>::foward_transform() const {
+//     int32_t new_degree, n_polynomials;
+//     struct ntt_polynomial<N, Q, W> b;
+//     const struct polynomial<N, Q, W> & a = *this;
+//     // Copy coefficients of a to b
+//     for (int i = 0; i < N; i++) {
+//         b[i] = a[i];
+//     }
+//     // 1. Recursively split the polynomials
+//     // 2. Every time we split all polynomials, we double the polynomial count
+//     // 3. When a polynomial splits, we generate two new polynomials with half the degree of the old one
+//     n_polynomials = 1;
+//     int k = 0;
+//     for (int32_t degree = N; degree > 1; degree = new_degree) {
+//         new_degree = degree / 2;
+//         for (int32_t poly = 0; poly < n_polynomials; poly++) {
+//             int32_t zeta = polynomial<N, Q, W>::zetas[++k];
+//             zeta = montgomery_reduction<Q>(zeta);
+//             for (int32_t i = 0; i < new_degree; i++) {
+//                 int32_t j = (poly*degree) + i;
+//                 int32_t t = multiply_montgomery<Q>(b[j + new_degree], zeta, Q);
+//                 b[j + new_degree] = subtract(b[j], t, Q);
+//                 b[j] = add(b[j], t, Q);
+//             }
+//         }
+//         n_polynomials *= 2;
+//     }
+//     return b;
+// }
+//////////////////////////////////////////////////////////////////////////
+
+
 template <unsigned int N, unsigned int Q, unsigned int W>
 struct ntt_polynomial<N, Q, W> polynomial<N, Q, W>::foward_transform() const {
     int32_t new_degree, n_polynomials;
@@ -143,9 +179,10 @@ struct ntt_polynomial<N, Q, W> polynomial<N, Q, W>::foward_transform() const {
         new_degree = degree / 2;
         for (int32_t poly = 0; poly < n_polynomials; poly++) {
             int32_t zeta = polynomial<N, Q, W>::zetas[++k];
+            zeta = montgomery_reduction<Q>(zeta);
             for (int32_t i = 0; i < new_degree; i++) {
                 int32_t j = (poly*degree) + i;
-                int32_t t = multiply(b[j + new_degree], zeta, Q);
+                int32_t t = multiply_montgomery<Q>(b[j + new_degree], zeta, Q);
                 b[j + new_degree] = subtract(b[j], t, Q);
                 b[j] = add(b[j], t, Q);
             }
