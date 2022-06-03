@@ -4,6 +4,7 @@
 #include <byteswap.h>
 #include <polynomial.h>
 #include <common/key_generation.h>
+#include <common/signature.h>
 
 namespace tcc {
 
@@ -28,9 +29,14 @@ namespace tcc {
 	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int D>
 	void pack_secret_key(struct secret_key<K, L, N, Q, W> secret_key, byte * output);
 
-	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W>
+	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int D>
 	struct secret_key<K, L, N, Q, W> unpack_secret_key(byte * input);
 
+	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int OMEGA>
+	void pack_signature(struct tcc::signature<K, L, N, Q, W> signature, byte * output);
+
+	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int OMEGA>
+	struct signature<K, L, N, Q, W> unpack_signature(byte * input);
 }
 
 #include <common/packing.cc>

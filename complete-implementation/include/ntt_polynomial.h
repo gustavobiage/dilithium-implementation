@@ -4,7 +4,6 @@
 #include <common/polynomial.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <polynomial.h>
 #include <math.h>
 #include <stdexcept>
 

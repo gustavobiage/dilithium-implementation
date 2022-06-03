@@ -75,6 +75,13 @@ int32_t tcc::add(int64_t a, int64_t b, int64_t m) {
 	return (a + b + m) % m;
 }
 
+int32_t tcc::abs(int32_t a) {
+	if (a < 0) {
+		return -a;
+	}
+	return a;
+}
+
 template <unsigned int N, unsigned int Q, unsigned int W>
 int32_t tcc::zeta_array<N, Q, W>::zetas[N];
 

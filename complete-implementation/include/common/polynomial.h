@@ -11,8 +11,8 @@ namespace tcc {
     template <unsigned int N, unsigned int Q, unsigned int W> struct ntt_polynomial;
     template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W> struct ntt_polynomial_vector;
     template <unsigned int P, unsigned int M, unsigned int N, unsigned int Q, unsigned int W> struct ntt_polynomial_matrix;
-    template <unsigned int N, unsigned int Q, unsigned int W> struct  zeta_array;
-    template <unsigned int N, unsigned int Q, unsigned int W> struct  zeta_constructor;
+    template <unsigned int N, unsigned int Q, unsigned int W> struct zeta_array;
+    template <unsigned int N, unsigned int Q, unsigned int W> struct zeta_constructor;
 
     int32_t fast_power(int32_t a, int32_t b, int32_t m); 
 
@@ -31,6 +31,8 @@ namespace tcc {
     int32_t subtract(int64_t a, int64_t b, int64_t m);
 
     int32_t add(int64_t a, int64_t b, int64_t m);
+
+    int32_t abs(int32_t a);
 
     template <unsigned int N, unsigned int Q, unsigned int W>
     struct zeta_constructor {

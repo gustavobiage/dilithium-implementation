@@ -9,6 +9,8 @@
 namespace tcc {
 	void print_hex_string(const unsigned char *, int);
 
+	void print_integer_in_binary(const unsigned char *, int);
+
 	void new_line();
 
 	template <typename ...Ts>

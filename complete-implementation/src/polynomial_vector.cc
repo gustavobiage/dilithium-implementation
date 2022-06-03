@@ -24,6 +24,16 @@ struct tcc::polynomial<N, Q, W> tcc::polynomial_vector<M, N, Q, W>::operator[](i
 }
 
 template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
+struct tcc::polynomial_vector<M, N, Q, W> & tcc::polynomial_vector<M, N, Q, W>::operator=(const int32_t c) {
+    struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
+    for (int i = 0; i < M; i++) {
+        a[i] = c;
+    }
+    return a;
+}
+
+
+template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
 struct tcc::polynomial_vector<M, N, Q, W> & tcc::polynomial_vector<M, N, Q, W>::operator=(const struct tcc::polynomial_vector<M, N, Q, W> & b) {
     struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
     for (int i = 0; i < M; i++) {
@@ -74,6 +84,15 @@ struct tcc::polynomial_matrix<M, M2, N, Q, W> tcc::polynomial_vector<M, N, Q, W>
     return c;
 }
 
+template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
+struct tcc::polynomial_vector<M, N, Q, W> tcc::polynomial_vector<M, N, Q, W>::operator*(int32_t c) const {
+    const struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
+    struct tcc::polynomial_vector<M, N, Q, W> b;
+    for (int i = 0; i < M; i++) {
+        b[i] = a[i] * c;
+    }
+    return b;
+}
 
 // Referencing returns matrix
 template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
@@ -105,4 +124,17 @@ struct tcc::ntt_polynomial_vector<M, N, Q, W> tcc::polynomial_vector<M, N, Q, W>
         b[i] = a[i].foward_transform();
     }
     return b;
+}
+
+template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
+int32_t tcc::polynomial_vector<M, N, Q, W>::norm_power_2() {
+    const struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
+    int32_t max = -Q, aux;
+    for (int i = 0; i < M; i++) {
+        aux = a[i].norm_power_2();
+        if (aux > max) {
+            max = aux;
+        }
+    }
+    return max;
 }

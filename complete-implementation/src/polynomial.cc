@@ -85,12 +85,22 @@ struct tcc::polynomial<N, Q, W> tcc::polynomial<N, Q, W>::operator*(const struct
 template <unsigned int N, unsigned int Q, unsigned int W>
 template <unsigned int M>
 struct tcc::polynomial_vector<M, N, Q, W> tcc::polynomial<N, Q, W>::operator*(const struct tcc::polynomial_vector<M, N, Q, W> & b) {
-    struct tcc::polynomial<N, Q, W> a = *this;
+    const struct tcc::polynomial<N, Q, W> & a = *this;
     struct tcc::polynomial_vector<M, N, Q, W> c;
     for (int i = 0; i < M; i++) {
         c[i] = a * b[i];
     }
     return c;
+}
+
+template <unsigned int N, unsigned int Q, unsigned int W>
+struct tcc::polynomial<N, Q, W> tcc::polynomial<N, Q, W>::operator*(int32_t c) const {
+    const struct tcc::polynomial<N, Q, W> & a = *this;
+    struct tcc::polynomial<N, Q, W> b;
+    for (int i = 0; i < N; i++) {
+        b[i] = multiply(a[i], c, Q);
+    }
+    return b;
 }
 
 template <unsigned int N, unsigned int Q, unsigned int W>
@@ -159,4 +169,34 @@ struct tcc::ntt_polynomial<N, Q, W> tcc::polynomial<N, Q, W>::foward_transform()
         n_polynomials *= 2;
     }
     return b;
+}
+
+#include <signature_scheme_utils.h>
+
+template <unsigned int N, unsigned int Q, unsigned int W>
+int32_t tcc::polynomial<N, Q, W>::norm_power_2() {
+    const struct tcc::polynomial<N, Q, W> & a = *this;
+    int32_t max = -Q, aux;
+    for (int i = 0; i < N; i++) {
+        if (a[i] < 0) {
+            // printf("-");
+            aux = tcc::cmod<Q>(a[i] + Q, (int32_t) Q);
+        } else {
+            // printf("+");
+            aux = tcc::cmod<Q>(a[i], (int32_t) Q);
+        }
+        // if (aux < 0) {
+        //     printf("-");
+        //     aux -= 1;
+        // } else {
+        //     printf("+");
+        aux -= 1;
+        // }
+        aux = abs(aux);
+        // printf("%d\n", aux);
+        if (aux > max) {
+            max = aux;
+        }
+    }
+    return max;
 }

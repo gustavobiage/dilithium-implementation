@@ -3,6 +3,7 @@
 
 #include <common/polynomial.h>
 #include <uniform_distribution.h>
+#include <signature_scheme_utils.h>
 #include <stdlib.h>
 #include <stdexcept>
 
@@ -35,6 +36,8 @@ namespace tcc {
 
 		struct polynomial<N, Q, W> operator*(const struct polynomial<N, Q, W> &);
 
+		struct polynomial<N, Q, W> operator*(int32_t) const;
+
 		template <unsigned int M>
 		struct polynomial_vector<M, N, Q, W> operator*(const struct polynomial_vector<M, N, Q, W> &);
 
@@ -52,6 +55,8 @@ namespace tcc {
 		static struct polynomial<N, Q, W> generate_random_polynomial();
 
 		struct ntt_polynomial<N, Q, W> foward_transform() const;
+
+		int32_t norm_power_2();
 
 		static zeta_array<N, Q, W> zetas;
 	private:
@@ -72,6 +77,8 @@ namespace tcc {
 
 		struct polynomial<N, Q, W> operator[](int) const;
 
+		struct polynomial_vector<M, N, Q, W> & operator=(const int32_t c);
+
 		struct polynomial_vector<M, N, Q, W> & operator=(const struct polynomial_vector<M, N, Q, W> &);
 
 		struct polynomial_matrix<M, 1, N, Q, W> operator+(const struct polynomial_matrix<M, 1, N, Q, W>&);
@@ -85,12 +92,16 @@ namespace tcc {
 		template <unsigned int M2>
 		struct polynomial_matrix<M, M2, N, Q, W> operator*(const struct polynomial_matrix<1, M2, N, Q, W>&);
 
+		struct polynomial_vector<M, N, Q, W> operator*(int32_t c) const;
+
 		// Referencing returns matrix
 		struct polynomial_matrix<M, 1, N, Q, W> operator&();
 		// Referencing returns matrix
 		struct polynomial_matrix<M, 1, N, Q, W> operator&() const;
 
 		struct ntt_polynomial_vector<M, N, Q, W> foward_transform() const;
+
+		int32_t norm_power_2();
 	private:
 		struct polynomial<N, Q, W> vector[M];
 	};
