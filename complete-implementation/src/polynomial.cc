@@ -160,3 +160,8 @@ struct tcc::ntt_polynomial<N, Q, W> tcc::polynomial<N, Q, W>::foward_transform()
     }
     return b;
 }
+
+template <unsigned int N, unsigned int Q, unsigned int W>
+int32_t tcc::polynomial<N, Q, W>::norm() {
+    return 0;
+}

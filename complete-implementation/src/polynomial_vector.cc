@@ -106,3 +106,8 @@ struct tcc::ntt_polynomial_vector<M, N, Q, W> tcc::polynomial_vector<M, N, Q, W>
     }
     return b;
 }
+
+template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
+int32_t tcc::polynomial_vector<M, N, Q, W>::norm() {
+    return 0;
+}

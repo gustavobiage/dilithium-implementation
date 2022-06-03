@@ -53,12 +53,13 @@ void randombytes(unsigned char* out, unsigned long outlen) {
 }
 
 int main() {
+	return 0;
 	tcc::key_pair<K, L, N, Q, W> key_pair = tcc::generate_key_pair<K, L, N, Q, W, ETA, D>();
 	uint8_t packed_public_key[tcc::PUBLIC_KEY_SIZE]; tcc::pack_public_key<K, L, N ,Q, W>(key_pair.public_key, (byte*) packed_public_key);
 	uint8_t packed_secret_key[tcc::SECRET_KEY_SIZE]; tcc::pack_secret_key<K, L, N ,Q, W, D>(key_pair.secret_key, (byte*) packed_secret_key);
 
-	uint8_t crystal_packed_public_key[tcc::PUBLIC_KEY_SIZE];
-	uint8_t crystal_packed_secret_key[tcc::SECRET_KEY_SIZE];
+	uint8_t crystal_packed_public_key[pqcrystals_dilithium2_ref_PUBLICKEYBYTES];
+	uint8_t crystal_packed_secret_key[pqcrystals_dilithium2_ref_SECRETKEYBYTES];
 	pqcrystals_dilithium2_ref_keypair(crystal_packed_public_key, crystal_packed_secret_key);
 
 	tcc::public_key<K, L, N, Q, W> public_key = tcc::unpack_public_key<K, L, N, Q, W, D>(crystal_packed_public_key);
@@ -141,13 +142,13 @@ int main() {
 
 	printf("secret key t0               : ");
 	for (int i = 0; i < K && sk_vector_t0_equal; i++)
-		for (int j = 0; j < N && sk_vector_s2_equal; j++)
+		for (int j = 0; j < N && sk_vector_t0_equal; j++)
 			sk_vector_t0_equal = key_pair.secret_key.t0[i][j] == secret_key.t0[i][j];
 	if (!sk_vector_t0_equal) printf("not equal!!\n"); else printf("equal!!\n");
 
 	if (!correct_key_sizes || !packed_public_key_equal || !packed_secret_key_equal ||                      // Encoded keys are correct
 		!pk_seed_p_equal   || !pk_vector_t1_equal      ||                                                  // Decoded public key is correct
-		!sk_seed_p_equal   || !sk_seed_k_equal         || !sk_seed_tr_equal        || !sk_vector_s1_equal) // Decoded secret key is correct
+		!sk_seed_p_equal   || !sk_seed_k_equal         || !sk_seed_tr_equal        || !sk_vector_s1_equal || !sk_vector_t0_equal) // Decoded secret key is correct
 	{
 		return -1;
 	}

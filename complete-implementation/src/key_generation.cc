@@ -69,8 +69,7 @@ struct tcc::key_pair<K, L, N, Q, W> tcc::generate_key_pair(byte zeta[SEED_ZETA_S
 	byte pt1[SEED_P_SIZE + T1_PACKED_SIZE];
 	memcpy(&pt1[0], p, SEED_P_SIZE);
 	byte t1_packed[T1_PACKED_SIZE];
-	tcc::pack_vector_t1<K, N, Q, W>(t1, t1_packed);
-	memcpy(&pt1[SEED_P_SIZE], t1_packed, T1_PACKED_SIZE);
+	tcc::pack_vector_t1<K, N, Q, W>(t1, &pt1[SEED_P_SIZE]);
 	byte tr[SEED_TR_SIZE];
 	tcc::sample_bytes(pt1, SEED_P_SIZE + T1_PACKED_SIZE, tr, SEED_TR_SIZE);
 
