@@ -106,3 +106,16 @@ struct tcc::ntt_polynomial_vector<M, N, Q, W> tcc::polynomial_vector<M, N, Q, W>
     }
     return b;
 }
+
+template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
+int32_t tcc::polynomial_vector<M, N, Q, W>::norm_power_2() {
+    const struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
+    int32_t max = -Q, aux;
+    for (int i = 0; < M; i++) {
+        aux = a[i].norm_power_2();
+        if (aux > max) {
+            max = aux;
+        }
+    }
+    return max;
+}

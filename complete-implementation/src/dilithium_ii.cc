@@ -49,3 +49,17 @@ struct tcc::polynomial_vector<LENGTH, N, Q, W> tcc::unpack_vector_s(byte * input
 	}
 	return s;
 }
+
+template <unsigned int K, unsigned int N, unsigned int Q, unsigned int W>
+void tcc::pack_vector_w1(struct tcc::polynomial_vector<K, N, Q, W> w0, byte * output) {
+	for (int i = 0; i < K; i++) {
+		for(int j = 0; j < N/4; j++) {
+			output[192*i + 3*j + 0]  = w0[i][4*j + 0];
+			output[192*i + 3*j + 0] |= w0[i][4*j + 1] << 6;
+			output[192*i + 3*j + 1]  = w0[i][4*j + 1] >> 2;
+			output[192*i + 3*j + 1] |= w0[i][4*j + 2] << 4;
+			output[192*i + 3*j + 2]  = w0[i][4*j + 2] >> 4;
+			output[192*i + 3*j + 2] |= w0[i][4*j + 3] << 2;
+		}
+	}
+}

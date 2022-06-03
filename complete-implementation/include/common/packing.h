@@ -28,7 +28,7 @@ namespace tcc {
 	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int D>
 	void pack_secret_key(struct secret_key<K, L, N, Q, W> secret_key, byte * output);
 
-	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W>
+	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int D>
 	struct secret_key<K, L, N, Q, W> unpack_secret_key(byte * input);
 
 }

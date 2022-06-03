@@ -53,6 +53,8 @@ namespace tcc {
 
 		struct ntt_polynomial<N, Q, W> foward_transform() const;
 
+		int32_t norm_power_2();
+
 		static zeta_array<N, Q, W> zetas;
 	private:
 		int32_t coefficients[N];
@@ -91,6 +93,8 @@ namespace tcc {
 		struct polynomial_matrix<M, 1, N, Q, W> operator&() const;
 
 		struct ntt_polynomial_vector<M, N, Q, W> foward_transform() const;
+
+		int32_t norm_power_2();
 	private:
 		struct polynomial<N, Q, W> vector[M];
 	};

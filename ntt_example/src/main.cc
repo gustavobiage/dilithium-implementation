@@ -8,6 +8,7 @@ const u_int32_t Q = 8380417;
 const u_int32_t N = 256;
 const u_int32_t r = 1753;
 const u_int32_t D = 13;
+const u_int32_t GAMMA2 = (Q - 1) / 88;
 
 namespace test {
 	const unsigned int QINV = 58728449;
@@ -166,6 +167,23 @@ namespace test {
 	  *a0 = a - (a1 << D);
 	  return a1;
 	}
+
+	int32_t decompose(int32_t *a0, int32_t a) {
+		int32_t a1;
+
+		a1  = (a + 127) >> 7;
+	#if GAMMA2 == (Q-1)/32
+		a1  = (a1*1025 + (1 << 21)) >> 22;
+		a1 &= 15;
+	#elif GAMMA2 == (Q-1)/88
+		a1  = (a1*11275 + (1 << 23)) >> 24;
+		a1 ^= ((43 - a1) >> 31) & a1;
+	#endif
+
+		*a0  = a - a1*2*GAMMA2;
+		*a0 -= (((Q-1)/2 - *a0) >> 31) & Q;
+		return a1;
+	}
 }
 #include <utility>
 
@@ -202,8 +220,36 @@ std::pair<int32_t, int32_t> power_2_round(int32_t r) {
     return std::make_pair( ((r - r0) >> D), r0);
 }
 
+#include <utility>
+
+template <unsigned int Q>
+std::pair<int32_t, int32_t> decompose(int32_t w, int32_t alpha) {
+    w = ((int64_t) w + Q) % Q;
+    int32_t w0, w1;
+    w0 = cmod<Q>(w, alpha);
+    // w0 = ((int64_t) w0 + Q) % Q;
+    if (w - w0 == Q - 1) {
+        w1 = 0;
+        w0 = Q-1;
+    } else {
+        w1 = (w - w0) / alpha;
+    }
+    return std::make_pair(w1, w0);
+}
 
 int main() {
+	int n, n2, n2_0, n2_1;
+	n = 8328515;
+	// for (n = 0; n < Q; n++) {
+		std::pair<int32_t, int32_t> p = decompose<Q>((int32_t) n, (int32_t) 2*GAMMA2);
+		n2 = n;
+		n2_1 = test::decompose(&n2_0, n2);
+		if (n2_0 != p.second || n2_1 != p.first) {
+			printf("ERROR ON %d: %d %d %d %d\n", n, p.first, p.second, n2_1, n2_0);
+		}
+	// }
+	printf("END\n");
+	return 0;
 
 	// uint32_t fa = 39613835;
 	// uint32_t fb = 6092167;
