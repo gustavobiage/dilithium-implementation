@@ -3,7 +3,7 @@
 
 // dilithium implementation
 #include <common/dilithium.h>
-#include <polynomial.h>
+#include <common/polynomial.h>
 #include <ntt_polynomial.h>
 // c standard library
 #include <utility>
@@ -65,6 +65,12 @@ namespace tcc {
 
 	template <unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int GAMMA1>
 	struct polynomial_vector<L, N, Q, W> expand_mask(byte seed[], int nounce_offset);
+
+	template <unsigned int Q>
+	int32_t make_hint(int32_t z, int32_t r, int32_t alpha);
+	
+	template <unsigned int Q>
+	int32_t use_hint(int32_t h, int32_t r, int32_t alpha);
 }
 
 

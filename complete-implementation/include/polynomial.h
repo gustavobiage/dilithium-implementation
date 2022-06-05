@@ -3,6 +3,7 @@
 
 #include <common/polynomial.h>
 #include <uniform_distribution.h>
+#include <signature_scheme_utils.h>
 #include <stdlib.h>
 #include <stdexcept>
 
@@ -34,6 +35,8 @@ namespace tcc {
 		struct polynomial<N, Q, W> operator-(const struct polynomial<N, Q, W> &);
 
 		struct polynomial<N, Q, W> operator*(const struct polynomial<N, Q, W> &);
+
+		struct polynomial<N, Q, W> operator*(int32_t) const;
 
 		template <unsigned int M>
 		struct polynomial_vector<M, N, Q, W> operator*(const struct polynomial_vector<M, N, Q, W> &);
@@ -86,6 +89,8 @@ namespace tcc {
 
 		template <unsigned int M2>
 		struct polynomial_matrix<M, M2, N, Q, W> operator*(const struct polynomial_matrix<1, M2, N, Q, W>&);
+
+		struct polynomial_vector<M, N, Q, W> operator*(int32_t c) const;
 
 		// Referencing returns matrix
 		struct polynomial_matrix<M, 1, N, Q, W> operator&();

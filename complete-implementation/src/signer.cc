@@ -1,6 +1,6 @@
 /* Included on header file */
 
-#define ABORT() k++; goto RETRY;
+#define ABORT() k += L; goto RETRY;
 
 template <unsigned int BETA, unsigned int GAMMA1, unsigned int GAMMA2, unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int OMEGA, unsigned int TAU>
 struct tcc::signature<K, L, N, Q, W> tcc::sign(struct secret_key<K, L, N, Q, W> & secret_key, byte message[], int message_size) {
@@ -36,6 +36,7 @@ struct tcc::signature<K, L, N, Q, W> tcc::sign(struct secret_key<K, L, N, Q, W> 
     sample_bytes(kMu, SEED_K_SIZE + MESSAGE_MU_SIZE, p_, SEED_P_LINE_SIZE);
 
 RETRY:
+    // printf("k = %d\n", k);
     polynomial_vector<L, N, Q, W> y = tcc::expand_mask<L, N, Q, W, GAMMA1>(p_, k);
     for (int i = 0; i < L; i++) {
         for (int j = 0; j < N/4; j++) {
@@ -152,39 +153,57 @@ RETRY:
     //     }
     // }
     // printf("END R0=================\n");
-    // =========================== TEST UNTIL HERE =============
-    struct tcc::signature<K, L, N, Q, W> signature;
-    return signature;
 
-
-    if (z.norm_power_2() >= (int64_t) (GAMMA1 - BETA) * (GAMMA1 - BETA) ||
-        r0.norm_power_2() >= (int64_t) (GAMMA2 - BETA) * (GAMMA2 - BETA)) {
+    if (
+        z.norm_power_2() >=  (GAMMA1 - BETA) ||
+        r0.norm_power_2() >= (GAMMA2 - BETA)) {
+        printf("ABORT 1\n");
         ABORT();
     }
-
 
     ntt_polynomial_vector<K, N, Q, W> t0_hat = secret_key.t0.foward_transform();
     ntt_polynomial_vector<K, N, Q, W> ct0_hat = (c_hat * t0_hat);
     polynomial_vector<K, N, Q, W> ct0 = ct0_hat.backward_transform();
+    polynomial_vector<K, N, Q, W> _ct0 = ct0 * -1;
+    polynomial_vector<K, N, Q, W> w_minus_cs2_plus_ct0 = w_minus_cs2 + ct0;
 
-    // TODO: Make hint 
     int hints_equal_1_count = 0;
     for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
-            hints_equal_1_count += (h[i][j] == 1);
+            h[i][j] = tcc::make_hint<Q>(_ct0[i][j], w_minus_cs2_plus_ct0[i][j], 2*GAMMA2);
+            hints_equal_1_count += h[i][j];
         }
     }
 
-    if (ct0.norm() >= GAMMA2 || hints_equal_1_count > OMEGA) {
+    for (int i = 0; i < K; i++) {
+        for (int j = 0; j < N/8; j++) {
+            int32_t aux[8];
+            aux[0] = h[i][8*j + 0];
+            aux[1] = h[i][8*j + 1];
+            aux[2] = h[i][8*j + 2];
+            aux[3] = h[i][8*j + 3];
+            aux[4] = h[i][8*j + 4];
+            aux[5] = h[i][8*j + 5];
+            aux[6] = h[i][8*j + 6];
+            aux[7] = h[i][8*j + 7];
+            printf("%d %d %d %d %d %d %d %d\n", aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7]);
+        }
+    }
+
+    if (ct0.norm_power_2() >= (int64_t) GAMMA2 * GAMMA2 || hints_equal_1_count > OMEGA) {
+        printf("ABORT 2\n");
         ABORT();
     }
 
-    // struct tcc::signature<K, L, N, Q, W> signature;
+    struct tcc::signature<K, L, N, Q, W> signature;
     memcpy(signature.c_til, c_til, SAMPLED_C_TIL_SIZE);
     signature.z = z;
     signature.h = h;
     return signature;
 
+    // // =========================== TEST UNTIL HERE =============
+    // struct tcc::signature<K, L, N, Q, W> signature;
+    // return signature;
     // struct ntt_polynomial_vector<L, N, Q> s1_hat = sk.s1.fowardTransformation();
     // struct ntt_polynomial_vector<K, N, Q> s2_hat = sk.s2.fowardTransformation();
 

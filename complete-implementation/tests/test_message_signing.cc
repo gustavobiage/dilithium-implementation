@@ -68,7 +68,6 @@ int main() {
 	byte message[MESSAGE_LENGTH];
 	memcpy(message, "MINHA MENSAGEM ASSINADA", 24);
 	// compute random message
-
 	tcc::signature<K, L, N, Q, W> signature = tcc::sign<BETA, GAMMA1, GAMMA2, K, L, N, Q, W, OMEGA, TAU>(key_pair.secret_key, message, MESSAGE_LENGTH);
 
 	for (int i = 0; i < 10; i++) {

@@ -32,6 +32,8 @@ namespace tcc {
 
     int32_t add(int64_t a, int64_t b, int64_t m);
 
+    int32_t abs(int32_t a);
+
     template <unsigned int N, unsigned int Q, unsigned int W>
     struct zeta_constructor {
     public:

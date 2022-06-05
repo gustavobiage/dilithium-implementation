@@ -326,3 +326,24 @@ struct tcc::polynomial_vector<L, N, Q, W> tcc::expand_mask(byte seed[], int noun
     }
     return y;
 }
+
+template <unsigned int Q>
+int32_t tcc::make_hint(int32_t z, int32_t r, int32_t alpha) {
+    int32_t r1 = high_order_bits<Q>(r, alpha);
+    int32_t v0 = high_order_bits<Q>(r + z, alpha);
+    return r1 != v0;
+}
+
+template <unsigned int Q>
+int32_t tcc::use_hint(int32_t h, int32_t r, int32_t alpha) {
+    int32_t m = (Q-1)/alpha;
+    std::pair<int32_t, int32_t> r_ = tcc::decompose<Q>(r, alpha);
+    const int32_t r1 = r_.first;
+    const int32_t r0 = r_.second;
+    if (h && r0 > 0) {
+        return add(r1, 1, m);
+    } else if (h && r0 <= 0) {
+        return subtract(r1, 1, m);
+    }
+    return r1;
+}

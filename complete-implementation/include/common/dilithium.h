@@ -38,6 +38,9 @@ namespace tcc {
 
 	template <unsigned int K, unsigned int N, unsigned int Q, unsigned int W>
 	void pack_vector_w1(struct tcc::polynomial_vector<K, N, Q, W> w0, byte * output);
+
+	template <unsigned int L, unsigned int N, unsigned int Q, unsigned int W>
+	void pack_vector_z(struct tcc::polynomial_vector<L, N, Q, W> z, byte * output);
 }
 
 #endif
