@@ -211,23 +211,24 @@ struct tcc::secret_key<K, L, N, Q, W> tcc::unpack_secret_key(byte * input) {
 	return secret_key;
 }
 
-template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W>
+template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int OMEGA>
 void tcc::pack_signature(struct tcc::signature<K, L, N, Q, W> signature, byte * output) {
  	unsigned int offset = 0;
+ 	printf("c_til[0] = %d\n", signature.c_til[0]);
 	memcpy(&output[offset], signature.c_til, SAMPLED_C_TIL_SIZE);
 	offset += SAMPLED_C_TIL_SIZE;
 	pack_vector_z<L, N, Q, W>(signature.z, &output[offset]);
-	offset += 576*L;
+	offset += Z_PACKED_SIZE;
 	for (int i = 0; i < OMEGA + K; i++) {
 		output[offset + i] = 0;
 	}
 	int index = 0;
 	for (int i = 0; i < K; i++) {
 		for (int j = 0; j < N; j++) {
-			if (h[i][j]) {
-				sig[index++] = j;
+			if (signature.h[i][j]) {
+				output[offset + index++] = j;
 			}
 		}
-		sig[OMEGA + i] = index;
+		output[offset + OMEGA + i] = index;
 	}
 }

@@ -68,16 +68,26 @@ int main() {
 	byte message[MESSAGE_LENGTH];
 	memcpy(message, "MINHA MENSAGEM ASSINADA", 24);
 	// compute random message
+
 	tcc::signature<K, L, N, Q, W> signature = tcc::sign<BETA, GAMMA1, GAMMA2, K, L, N, Q, W, OMEGA, TAU>(key_pair.secret_key, message, MESSAGE_LENGTH);
+	byte packed_signature[tcc::SIGNATURE_SIZE]; tcc::pack_signature<K, L, N ,Q, W, OMEGA>(signature, (byte*) packed_signature);
 
-	for (int i = 0; i < 10; i++) {
-		printf("\n\n\n");
-	}
-
-	uint8_t crystal_packed_signature[pqcrystals_dilithium2_BYTES];
-	size_t siglen;
+	uint8_t crystal_packed_signature[pqcrystals_dilithium2_BYTES]; size_t siglen;
 	pqcrystals_dilithium2_ref_signature(crystal_packed_signature, &siglen, (uint8_t *) message, MESSAGE_LENGTH, (uint8_t *) packed_secret_key);
-	if (siglen != pqcrystals_dilithium2_BYTES) {
+	
+	bool correct_signature_size = true;
+	bool packed_signature_equal = true;
+
+	printf("signature size              : %d\n", tcc::SIGNATURE_SIZE);
+	printf("signature size (pq-crystal) : %d\n", pqcrystals_dilithium2_BYTES);
+	correct_signature_size = siglen == pqcrystals_dilithium2_BYTES && pqcrystals_dilithium2_BYTES == tcc::SIGNATURE_SIZE;
+	printf("encoded signature           : ");
+	for (int i = 0; i < tcc::SIGNATURE_SIZE && packed_signature_equal; i++) {
+		packed_signature_equal = packed_signature[i] == crystal_packed_signature[i];
+	}
+	if (!packed_signature_equal) printf("not equal!!\n"); else printf("equal!!\n");
+
+	if (!correct_signature_size || packed_signature_equal) {
 		return -1;
 	}
 
