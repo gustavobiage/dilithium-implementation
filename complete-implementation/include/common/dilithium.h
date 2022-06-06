@@ -10,14 +10,18 @@ namespace tcc {
 
 	const unsigned int Q_ = 58728449;
 
+
 	// Seed sizes
-	const unsigned int SEED_P_SIZE = 32;
-	const unsigned int SEED_P_LINE_SIZE = 64;
-	const unsigned int SEED_K_SIZE = 32;
-	const unsigned int SEED_TR_SIZE = 32;
-	const unsigned int SEED_ZETA_SIZE = 32;
-	const unsigned int MESSAGE_MU_SIZE = 64;
-	const unsigned int SAMPLED_C_TIL_SIZE = 32;
+	const unsigned int SAMPLE_32_BYTES = 32;
+	const unsigned int SAMPLE_64_BYTES = 64;
+
+	const unsigned int SEED_P_SIZE = SAMPLE_32_BYTES;
+	const unsigned int SEED_P_LINE_SIZE = SAMPLE_64_BYTES;
+	const unsigned int SEED_K_SIZE = SAMPLE_32_BYTES;
+	const unsigned int SEED_TR_SIZE = SAMPLE_32_BYTES;
+	const unsigned int SEED_ZETA_SIZE = SAMPLE_32_BYTES;
+	const unsigned int MESSAGE_MU_SIZE = SAMPLE_64_BYTES;
+	const unsigned int SAMPLED_C_TIL_SIZE = SAMPLE_32_BYTES;
 
 	extern const unsigned int K;
 	extern const unsigned int L;

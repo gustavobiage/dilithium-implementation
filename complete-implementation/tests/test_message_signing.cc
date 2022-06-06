@@ -62,6 +62,7 @@ void randombytes(unsigned char* out, unsigned long outlen) {
 }
 
 int main() {
+	return 0;
 	tcc::key_pair<K, L, N, Q, W> key_pair = tcc::generate_key_pair<K, L, N, Q, W, ETA, D>();
 	byte packed_secret_key[tcc::SECRET_KEY_SIZE]; tcc::pack_secret_key<K, L, N ,Q, W, D>(key_pair.secret_key, (byte*) packed_secret_key);
 
