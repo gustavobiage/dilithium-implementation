@@ -12,6 +12,7 @@
 // includes from my implementation
 #include <key_generation.h>
 #include <signer.h>
+#include <verifier.h>
 #include <dilithium_ii.h>
 #include <signature_scheme_utils.h>
 #include <common/packing.h>
@@ -63,7 +64,7 @@ void randombytes(unsigned char* out, unsigned long outlen) {
 
 int main() {
 	tcc::key_pair<K, L, N, Q, W> key_pair = tcc::generate_key_pair<K, L, N, Q, W, ETA, D>();
-	byte packed_secret_key[tcc::SECRET_KEY_SIZE]; tcc::pack_secret_key<K, L, N ,Q, W, D>(key_pair.secret_key, (byte*) packed_secret_key);
+	byte packed_public_key[tcc::PUBLIC_KEY_SIZE]; tcc::pack_public_key<K, L, N ,Q, W>(key_pair.public_key, (byte*) packed_public_key);
 
 	byte message[MESSAGE_LENGTH];
 	memcpy(message, "MINHA MENSAGEM ASSINADA", 24);
@@ -72,22 +73,15 @@ int main() {
 	tcc::signature<K, L, N, Q, W> signature = tcc::sign<BETA, GAMMA1, GAMMA2, K, L, N, Q, W, OMEGA, TAU>(key_pair.secret_key, message, MESSAGE_LENGTH);
 	byte packed_signature[tcc::SIGNATURE_SIZE]; tcc::pack_signature<K, L, N ,Q, W, OMEGA>(signature, (byte*) packed_signature);
 
-	uint8_t crystal_packed_signature[pqcrystals_dilithium2_BYTES]; size_t siglen;
-	pqcrystals_dilithium2_ref_signature(crystal_packed_signature, &siglen, (uint8_t *) message, MESSAGE_LENGTH, (uint8_t *) packed_secret_key);
-	
-	bool correct_signature_size = true;
-	bool packed_signature_equal = true;
+	bool signature_valid = tcc::verify<BETA, GAMMA1, GAMMA2, K, L, N, Q, W, D, TAU>(signature, message, MESSAGE_LENGTH, key_pair.public_key);
+	bool pq_crystal_signature_valid = pqcrystals_dilithium2_ref_verify(packed_signature, tcc::SIGNATURE_SIZE, message, MESSAGE_LENGTH, packed_public_key) == 0;
 
-	printf("signature size              : %d\n", tcc::SIGNATURE_SIZE);
-	printf("signature size (pq-crystal) : %d\n", pqcrystals_dilithium2_BYTES);
-	correct_signature_size = siglen == pqcrystals_dilithium2_BYTES && pqcrystals_dilithium2_BYTES == tcc::SIGNATURE_SIZE;
-	printf("encoded signature           : ");
-	for (int i = 0; i < tcc::SIGNATURE_SIZE && packed_signature_equal; i++) {
-		packed_signature_equal = packed_signature[i] == crystal_packed_signature[i];
-	}
-	if (!packed_signature_equal) printf("not equal!!\n"); else printf("equal!!\n");
+	printf("signature valid             : ");
+	if (signature_valid) printf("VALID\n"); else  printf("INVALID\n");
+	printf("signature valid (pq-crystal): ");
+	if (pq_crystal_signature_valid) printf("VALID\n"); else  printf("INVALID\n");
 
-	if (!correct_signature_size || !packed_signature_equal) {
+	if (signature_valid != pq_crystal_signature_valid) {
 		return -1;
 	}
 

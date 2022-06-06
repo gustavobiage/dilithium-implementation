@@ -88,37 +88,4 @@ void tcc::pack_vector_z(struct tcc::polynomial_vector<L, N, Q, W> z, byte * outp
 			output[576*i + 9*j + 8]  = aux[3] >> 10;
 		}
 	}
-	// #if GAMMA1 == (1 << 17)
-	//   for(i = 0; i < N/4; ++i) {
-	//     t[0] = GAMMA1 - a->coeffs[4*i+0];
-	//     t[1] = GAMMA1 - a->coeffs[4*i+1];
-	//     t[2] = GAMMA1 - a->coeffs[4*i+2];
-	//     t[3] = GAMMA1 - a->coeffs[4*i+3];
-
-	//     r[9*i+0]  = t[0];
-	//     r[9*i+1]  = t[0] >> 8;
-	//     r[9*i+2]  = t[0] >> 16;
-	//     r[9*i+2] |= t[1] << 2;
-	//     r[9*i+3]  = t[1] >> 6;
-	//     r[9*i+4]  = t[1] >> 14;
-	//     r[9*i+4] |= t[2] << 4;
-	//     r[9*i+5]  = t[2] >> 4;
-	//     r[9*i+6]  = t[2] >> 12;
-	//     r[9*i+6] |= t[3] << 6;
-	//     r[9*i+7]  = t[3] >> 2;
-	//     r[9*i+8]  = t[3] >> 10;
-	//   }
-	// #elif GAMMA1 == (1 << 19)
-	//   for(i = 0; i < N/2; ++i) {
-	//     t[0] = GAMMA1 - a->coeffs[2*i+0];
-	//     t[1] = GAMMA1 - a->coeffs[2*i+1];
-
-	//     r[5*i+0]  = t[0];
-	//     r[5*i+1]  = t[0] >> 8;
-	//     r[5*i+2]  = t[0] >> 16;
-	//     r[5*i+2] |= t[1] << 4;
-	//     r[5*i+3]  = t[1] >> 4;
-	//     r[5*i+4]  = t[1] >> 12;
-	//   }
-	// #endif
 }
