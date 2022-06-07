@@ -77,6 +77,8 @@ namespace tcc {
 
 		struct polynomial<N, Q, W> operator[](int) const;
 
+		struct polynomial_vector<M, N, Q, W> & operator=(const int32_t c);
+
 		struct polynomial_vector<M, N, Q, W> & operator=(const struct polynomial_vector<M, N, Q, W> &);
 
 		struct polynomial_matrix<M, 1, N, Q, W> operator+(const struct polynomial_matrix<M, 1, N, Q, W>&);

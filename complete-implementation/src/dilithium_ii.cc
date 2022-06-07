@@ -89,3 +89,37 @@ void tcc::pack_vector_z(struct tcc::polynomial_vector<L, N, Q, W> z, byte * outp
 		}
 	}
 }
+
+template <unsigned int L, unsigned int N, unsigned int Q, unsigned int W>
+struct tcc::polynomial_vector<L, N, Q, W> tcc::unpack_vector_z(byte * input) {
+	tcc:polynomial_vector<L, N, Q, W> z;
+	for(int i = 0; i < L; ++i) {
+		for (int j = 0; j < N/4; j++) {
+			z[i][4*j + 0]  = input[576*i + 9*j + 0];
+			z[i][4*j + 0] |= (uint32_t) input[576*i + 9*j + 1] << 8;
+			z[i][4*j + 0] |= (uint32_t) input[576*i + 9*j + 2] << 16;
+			z[i][4*j + 0] &= 0x3FFFF;
+
+			z[i][4*j + 1]  = input[576*i + 9*j + 2] >> 2;
+			z[i][4*j + 1] |= (uint32_t) input[576*i + 9*j + 3] << 6;
+			z[i][4*j + 1] |= (uint32_t) input[576*i + 9*j + 4] << 14;
+			z[i][4*j + 1] &= 0x3FFFF;
+
+			z[i][4*j + 2]  = input[576*i + 9*j + 4] >> 4;
+			z[i][4*j + 2] |= (uint32_t) input[576*i + 9*j + 5] << 4;
+			z[i][4*j + 2] |= (uint32_t) input[576*i + 9*j + 6] << 12;
+			z[i][4*j + 2] &= 0x3FFFF;
+
+			z[i][4*j + 3]  = input[576*i + 9*j + 6] >> 6;
+			z[i][4*j + 3] |= (uint32_t) input[576*i + 9*j + 7] << 2;
+			z[i][4*j + 3] |= (uint32_t) input[576*i + 9*j + 8] << 10;
+			z[i][4*j + 3] &= 0x3FFFF;
+
+			z[i][4*j + 0] = GAMMA1 - z[i][4*j + 0];
+			z[i][4*j + 1] = GAMMA1 - z[i][4*j + 1];
+			z[i][4*j + 2] = GAMMA1 - z[i][4*j + 2];
+			z[i][4*j + 3] = GAMMA1 - z[i][4*j + 3];
+		}
+	}
+	return z;
+}

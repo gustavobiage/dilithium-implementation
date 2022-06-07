@@ -24,6 +24,16 @@ struct tcc::polynomial<N, Q, W> tcc::polynomial_vector<M, N, Q, W>::operator[](i
 }
 
 template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
+struct tcc::polynomial_vector<M, N, Q, W> & tcc::polynomial_vector<M, N, Q, W>::operator=(const int32_t c) {
+    struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
+    for (int i = 0; i < M; i++) {
+        a[i] = c;
+    }
+    return a;
+}
+
+
+template <unsigned int M, unsigned int N, unsigned int Q, unsigned int W>
 struct tcc::polynomial_vector<M, N, Q, W> & tcc::polynomial_vector<M, N, Q, W>::operator=(const struct tcc::polynomial_vector<M, N, Q, W> & b) {
     struct tcc::polynomial_vector<M, N, Q, W> & a = *this;
     for (int i = 0; i < M; i++) {

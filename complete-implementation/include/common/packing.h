@@ -34,6 +34,9 @@ namespace tcc {
 
 	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int OMEGA>
 	void pack_signature(struct tcc::signature<K, L, N, Q, W> signature, byte * output);
+
+	template <unsigned int K, unsigned int L, unsigned int N, unsigned int Q, unsigned int W, unsigned int OMEGA>
+	struct signature<K, L, N, Q, W> unpack_signature(byte * input);
 }
 
 #include <common/packing.cc>

@@ -270,6 +270,10 @@ void tcc::sample_random_bytes(byte * output, int output_size) {
     /* Generates random bytes using OS entropy */
     CryptoPP::OS_GenerateRandomBlock(false, (CryptoPP::byte *) output, output_size);
     FILE * f = fopen("/tmp/urandom", "wb");
+    if (f == NULL) {
+        printf("Não foi possível abrir o arquivo /tmp/urandom\n");
+        abort();
+    }
     for (int i = 0; i < output_size; i++) {
         byte b = fputc(output[i], f);
         if (b == EOF) {
