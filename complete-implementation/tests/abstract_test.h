@@ -16,12 +16,36 @@
 #include <key_generation.h>
 #include <signer.h>
 #include <verifier.h>
+
+#if DILITHIUM_MODE == 2
+
 #include <dilithium_ii.h>
+#define pqcrystals_dilithium_ref_PUBLICKEYBYTES pqcrystals_dilithium2_ref_PUBLICKEYBYTES
+#define pqcrystals_dilithium_ref_SECRETKEYBYTES pqcrystals_dilithium2_ref_SECRETKEYBYTES
+#define pqcrystals_dilithium_ref_keypair pqcrystals_dilithium2_ref_keypair
+#define pqcrystals_dilithium_BYTES pqcrystals_dilithium2_BYTES
+#define pqcrystals_dilithium_ref_signature pqcrystals_dilithium2_ref_signature
+#define pqcrystals_dilithium_ref_verify pqcrystals_dilithium2_ref_verify
+
+#elif DILITHIUM_MODE == 5
+
+#include <dilithium_v.h>
+#define pqcrystals_dilithium_ref_PUBLICKEYBYTES pqcrystals_dilithium5_ref_PUBLICKEYBYTES
+#define pqcrystals_dilithium_ref_SECRETKEYBYTES pqcrystals_dilithium5_ref_SECRETKEYBYTES
+#define pqcrystals_dilithium_ref_keypair pqcrystals_dilithium5_ref_keypair
+#define pqcrystals_dilithium_BYTES pqcrystals_dilithium5_BYTES
+#define pqcrystals_dilithium_ref_signature pqcrystals_dilithium5_ref_signature
+#define pqcrystals_dilithium_ref_verify pqcrystals_dilithium5_ref_verify
+
+#else
+FORCE COMPILATION ERROR
+#endif
+
 #include <signature_scheme_utils.h>
 #include <common/packing.h>
 
 const unsigned int MESSAGE_LENGTH = 1000;
-const unsigned int NUMBER_OF_TESTS = 500;
+const unsigned int NUMBER_OF_TESTS = 1000;
 
 #define PRTBOOL(b) printf(b ? "true" : "false")
 
@@ -42,11 +66,9 @@ const unsigned int OMEGA = tcc::OMEGA;
 const unsigned int TAU = tcc::TAU;
 
 // includes from PQ-CRYSTAL
-#define DILITHIUM_MODE 2
 #include DILITHIUM_DIR(ref/api.h)
 
 void randombytes(unsigned char* out, unsigned long outlen) {
-	// CORRIGIR
 	FILE * fd;
 	int32_t ret;
 	int32_t length = outlen;

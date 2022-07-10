@@ -1,16 +1,16 @@
 #include <abstract_test.h>
 
 int main() {
+	printf("Executing tests with DILITHIUM %d - it should take a few seconds.\n", DILITHIUM_MODE);
 	int ntests = NUMBER_OF_TESTS;
 	while (ntests--) {
 		tcc::key_pair<K, L, N, Q, W> key_pair = tcc::generate_key_pair<K, L, N, Q, W, ETA, D>();
 		uint8_t packed_public_key[tcc::PUBLIC_KEY_SIZE]; tcc::pack_public_key<K, L, N ,Q, W>(key_pair.public_key, (byte*) packed_public_key);
 		uint8_t packed_secret_key[tcc::SECRET_KEY_SIZE]; tcc::pack_secret_key<K, L, N ,Q, W, D>(key_pair.secret_key, (byte*) packed_secret_key);
 
-		uint8_t crystal_packed_public_key[pqcrystals_dilithium2_ref_PUBLICKEYBYTES];
-		uint8_t crystal_packed_secret_key[pqcrystals_dilithium2_ref_SECRETKEYBYTES];
-		pqcrystals_dilithium2_ref_keypair(crystal_packed_public_key, crystal_packed_secret_key);
-
+		uint8_t crystal_packed_public_key[pqcrystals_dilithium_ref_PUBLICKEYBYTES];
+		uint8_t crystal_packed_secret_key[pqcrystals_dilithium_ref_SECRETKEYBYTES];
+		pqcrystals_dilithium_ref_keypair(crystal_packed_public_key, crystal_packed_secret_key);
 		tcc::public_key<K, L, N, Q, W> public_key = tcc::unpack_public_key<K, L, N, Q, W, D>(crystal_packed_public_key);
 		tcc::secret_key<K, L, N, Q, W> secret_key = tcc::unpack_secret_key<K, L, N, Q, W, D>(crystal_packed_secret_key);
 
@@ -29,12 +29,12 @@ int main() {
 		// compare compressed keys
 		if (DEBUG) {
 			printf("public key size             : %d\n", tcc::PUBLIC_KEY_SIZE);
-			printf("public key size (pq-crystal): %d\n", pqcrystals_dilithium2_ref_PUBLICKEYBYTES);
+			printf("public key size (pq-crystal): %d\n", pqcrystals_dilithium_ref_PUBLICKEYBYTES);
 			printf("secret key size             : %d\n", tcc::SECRET_KEY_SIZE);
-			printf("secret key size (pq-crystal): %d\n", pqcrystals_dilithium2_ref_SECRETKEYBYTES);
+			printf("secret key size (pq-crystal): %d\n", pqcrystals_dilithium_ref_SECRETKEYBYTES);
 		}
 
-		correct_key_sizes = (tcc::PUBLIC_KEY_SIZE == pqcrystals_dilithium2_ref_PUBLICKEYBYTES) && (tcc::SECRET_KEY_SIZE == pqcrystals_dilithium2_ref_SECRETKEYBYTES);
+		correct_key_sizes = (tcc::PUBLIC_KEY_SIZE == pqcrystals_dilithium_ref_PUBLICKEYBYTES) && (tcc::SECRET_KEY_SIZE == pqcrystals_dilithium_ref_SECRETKEYBYTES);
 		// Compare encoded public key
 		if (DEBUG) printf("encoded public key          : ");
 		for (int i = 0; i < tcc::PUBLIC_KEY_SIZE && packed_public_key_equal; i++) {
@@ -126,6 +126,6 @@ int main() {
 		}
 	}
 
-	printf("Success at key pair generation test\n");
+	printf("Success at key pair generation with %d test.\n", NUMBER_OF_TESTS);
 	return 0;
 }

@@ -37,11 +37,6 @@ struct tcc::signature<K, L, N, Q, W> tcc::sign(struct secret_key<K, L, N, Q, W> 
 RETRY:
 
     polynomial_vector<L, N, Q, W> y = tcc::expand_mask<L, N, Q, W, GAMMA1>(p_, k);
-    // for (int i = 0; i < L; i++) {
-    //     for (int j = 0; j < N; j++) {
-    //         add(y[i][j], Q, Q);
-    //     }
-    // }
 
     ntt_polynomial_vector<L, N, Q, W> y_hat = y.foward_transform();
     ntt_polynomial_vector<K, N, Q, W> w_hat = (A_hat * y_hat);

@@ -25,17 +25,19 @@ namespace tcc {
 
 	extern const unsigned int K;
 	extern const unsigned int L;
+	extern const unsigned int OMEGA;
 
-	// Packed sizes
-	const unsigned int S1_PACKED_SIZE = L*96;
-	const unsigned int S2_PACKED_SIZE = K*96;
+	extern const unsigned int S1_PACKED_SIZE;
+	extern const unsigned int S2_PACKED_SIZE;
 	const unsigned int T0_PACKED_SIZE = K*416;
 	const unsigned int T1_PACKED_SIZE = K*320;
-	const unsigned int W1_PACKED_SIZE = K*192; // This should be specific for Dilithium II
-	const unsigned int Z_PACKED_SIZE  = L*576;
+	extern const unsigned int W1_PACKED_SIZE;
+	extern const unsigned int Z_PACKED_SIZE;
+
+	// Packed sizes
 	const unsigned int PUBLIC_KEY_SIZE = SEED_P_SIZE + T1_PACKED_SIZE;
-	const unsigned int SECRET_KEY_SIZE = SEED_P_SIZE+SEED_K_SIZE+SEED_TR_SIZE+S1_PACKED_SIZE+S2_PACKED_SIZE+T0_PACKED_SIZE;
-	const unsigned int SIGNATURE_SIZE = SAMPLED_C_TIL_SIZE + Z_PACKED_SIZE + 80/*OMEGA*/ + K;
+	const unsigned int SECRET_KEY_SIZE = SEED_P_SIZE + SEED_K_SIZE + SEED_TR_SIZE + S1_PACKED_SIZE + S2_PACKED_SIZE + T0_PACKED_SIZE;
+	const unsigned int SIGNATURE_SIZE = SAMPLED_C_TIL_SIZE + Z_PACKED_SIZE + OMEGA + K;
 
 	template <unsigned int LENGTH, unsigned int N, unsigned int Q, unsigned int W>
 	void pack_vector_s(struct polynomial_vector<LENGTH, N, Q, W> s, byte * output);

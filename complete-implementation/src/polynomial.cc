@@ -179,21 +179,12 @@ int32_t tcc::polynomial<N, Q, W>::norm_power_2() {
     int32_t max = -Q, aux;
     for (int i = 0; i < N; i++) {
         if (a[i] < 0) {
-            // printf("-");
             aux = tcc::cmod<Q>(a[i] + Q, (int32_t) Q);
         } else {
-            // printf("+");
             aux = tcc::cmod<Q>(a[i], (int32_t) Q);
         }
-        // if (aux < 0) {
-        //     printf("-");
-        //     aux -= 1;
-        // } else {
-        //     printf("+");
         aux -= 1;
-        // }
         aux = abs(aux);
-        // printf("%d\n", aux);
         if (aux > max) {
             max = aux;
         }

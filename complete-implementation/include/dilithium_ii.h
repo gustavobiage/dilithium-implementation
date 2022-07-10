@@ -1,8 +1,6 @@
 #ifndef __dilithium_
 #define __dilithium_
 
-#include <common/dilithium.h>
-
 namespace tcc {
 	const unsigned int K = 4;
 	const unsigned int L = 4;
@@ -16,10 +14,15 @@ namespace tcc {
 	const unsigned int BETA = 78;
 	const unsigned int OMEGA = 80;
 	const unsigned int TAU = 39;
+
+	const unsigned int S1_PACKED_SIZE = L*96;
+	const unsigned int S2_PACKED_SIZE = K*96;
+	const unsigned int W1_PACKED_SIZE = K*192;
+	const unsigned int Z_PACKED_SIZE  = L*576;
 }
 
+#include <common/dilithium.h>
 
-// TODO corrigir
 #include <dilithium_ii.cc>
 
 #endif

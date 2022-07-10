@@ -13,7 +13,7 @@ int main() {
 		byte packed_signature[tcc::SIGNATURE_SIZE]; tcc::pack_signature<K, L, N ,Q, W, OMEGA>(signature, (byte*) packed_signature);
 
 		bool signature_valid = tcc::verify<BETA, GAMMA1, GAMMA2, K, L, N, Q, W, D, OMEGA, TAU>(signature, message, MESSAGE_LENGTH, key_pair.public_key);
-		bool pq_crystal_signature_valid = pqcrystals_dilithium2_ref_verify(packed_signature, tcc::SIGNATURE_SIZE, message, MESSAGE_LENGTH, packed_public_key) == 0;
+		bool pq_crystal_signature_valid = pqcrystals_dilithium_ref_verify(packed_signature, tcc::SIGNATURE_SIZE, message, MESSAGE_LENGTH, packed_public_key) == 0;
 
 		if (DEBUG) {
 			printf("signature valid             : "); if (signature_valid) printf("VALID\n"); else  printf("INVALID\n");
@@ -25,6 +25,6 @@ int main() {
 		}
 	}
 
-	printf("Success at signature verification test\n");
+	printf("Success at signature verification with %d test.\n", NUMBER_OF_TESTS);
 	return 0;
 }

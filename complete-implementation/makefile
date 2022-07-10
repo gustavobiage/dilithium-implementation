@@ -13,11 +13,13 @@ INCL_DILITHIUM = $(TMP_DILITHIUM_DIR)
 TMP_URANDOM = $(TMP_DIR)/urandom
 DEV_URANDOM = $(DEV_DIR)/urandom
 
+# Mode should be either 2 or 5
+DILITHIUM_MODE = 2
+
 GCC = g++
 FLAGS = -I$(INCLUDE_DIR) -I$(SRC_DIR) -lcryptopp -fpermissive
-PQ_CRYSTAL_FLAGS = -L$(INCL_DILITHIUM)/ref -Wl,-rpath=$(INCL_DILITHIUM)/ref -lpqcrystals_dilithium2_ref -lpqcrystals_fips202_ref -lpqcrystals_aes256ctr_ref -lcrypto
-TEST_FLAGS = $(FLAGS) -I$(TESTS_DIR) -Dpq_crystal_dilithium=$(INCL_DILITHIUM) $(PQ_CRYSTAL_FLAGS) --verbose
-#-lpqcrystals_fips202_ref -lpqcrystals_aes256ctr_ref -lc
+PQ_CRYSTAL_FLAGS = -L$(INCL_DILITHIUM)/ref -Wl,-rpath=$(INCL_DILITHIUM)/ref -lpqcrystals_dilithium$(DILITHIUM_MODE)_ref -lpqcrystals_fips202_ref -lpqcrystals_aes256ctr_ref -lcrypto
+TEST_FLAGS = $(FLAGS) -I$(TESTS_DIR) -DDILITHIUM_MODE=$(DILITHIUM_MODE) -Dpq_crystal_dilithium=$(INCL_DILITHIUM) $(PQ_CRYSTAL_FLAGS) --verbose
 
 MAIN = $(SRC_DIR)/main.cc
 TEST_FILES := $(shell find $(TESTS_DIR) -name 'test_*.cc')
