@@ -50,4 +50,4 @@ run_tests: compile_tests
 
 clean:
 	rm -f -d -r $(OUTPUT_DIR)
-	rm -f -d -r $(TMP_DILITHIUM)
+	rm -f -d -r $(TMP_DILITHIUM_DIR)
