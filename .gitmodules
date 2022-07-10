@@ -1,0 +1,3 @@
+[submodule "complete-implementation/dilithium"]
+	path = complete-implementation/dilithium
+	url = git@github.com:pq-crystals/dilithium.git
