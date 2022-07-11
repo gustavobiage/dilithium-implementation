@@ -27,6 +27,16 @@
 #define pqcrystals_dilithium_ref_signature pqcrystals_dilithium2_ref_signature
 #define pqcrystals_dilithium_ref_verify pqcrystals_dilithium2_ref_verify
 
+#elif DILITHIUM_MODE == 3
+
+#include <dilithium_iii.h>
+#define pqcrystals_dilithium_ref_PUBLICKEYBYTES pqcrystals_dilithium3_ref_PUBLICKEYBYTES
+#define pqcrystals_dilithium_ref_SECRETKEYBYTES pqcrystals_dilithium3_ref_SECRETKEYBYTES
+#define pqcrystals_dilithium_ref_keypair pqcrystals_dilithium3_ref_keypair
+#define pqcrystals_dilithium_BYTES pqcrystals_dilithium3_BYTES
+#define pqcrystals_dilithium_ref_signature pqcrystals_dilithium3_ref_signature
+#define pqcrystals_dilithium_ref_verify pqcrystals_dilithium3_ref_verify
+
 #elif DILITHIUM_MODE == 5
 
 #include <dilithium_v.h>

@@ -13,8 +13,8 @@ INCL_DILITHIUM = $(TMP_DILITHIUM_DIR)
 TMP_URANDOM = $(TMP_DIR)/urandom
 DEV_URANDOM = $(DEV_DIR)/urandom
 
-# Mode should be either 2 or 5
-DILITHIUM_MODE = 2
+# Mode should be either 2, 3 or 5
+DILITHIUM_MODE = 5
 
 GCC = g++
 FLAGS = -I$(INCLUDE_DIR) -I$(SRC_DIR) -lcryptopp -fpermissive

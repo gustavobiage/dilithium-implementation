@@ -61,11 +61,6 @@ RETRY:
     polynomial_vector<K, N, Q, W> s2 = secret_key.s2;
 
     // For all coefficients of polynomials, add Q if coefficient is negative.
-    for (int i = 0; i < K; i++) {
-        for (int  j = 0; j < N/4; j++) {
-            s2[i][j] = add(s2[i][j], Q, Q);
-        }
-    }
     for (int i = 0; i < N; i++) {
         c[i] = add(c[i], Q, Q);
     }
